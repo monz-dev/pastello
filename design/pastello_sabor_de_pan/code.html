@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+
+<html class="light" lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Pastello - Sabor de Pan</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "inverse-on-surface": "#f3f0ef",
+                        "secondary-fixed-dim": "#ffb2bf",
+                        "surface-container-low": "#f6f3f2",
+                        "tertiary-fixed": "#e7e2d9",
+                        "on-background": "#1c1b1b",
+                        "surface-dark": "#121212",
+                        "error": "#ba1a1a",
+                        "primary": "#805062",
+                        "on-secondary": "#ffffff",
+                        "beige-soft": "#F5F5DC",
+                        "secondary-container": "#de2264",
+                        "on-tertiary-fixed": "#1d1b16",
+                        "surface-light": "#FFFFFF",
+                        "on-tertiary-container": "#58564f",
+                        "on-primary-fixed-variant": "#65394b",
+                        "secondary-fixed": "#ffd9de",
+                        "on-tertiary-fixed-variant": "#494640",
+                        "on-tertiary": "#ffffff",
+                        "surface-bright": "#fcf9f8",
+                        "tertiary-container": "#d0cbc3",
+                        "on-primary-fixed": "#330f1f",
+                        "on-error-container": "#93000a",
+                        "inverse-primary": "#f2b6cb",
+                        "outline": "#827377",
+                        "secondary": "#b7004d",
+                        "outline-variant": "#d4c2c6",
+                        "background": "#fcf9f8",
+                        "on-primary-container": "#76485a",
+                        "on-surface": "#1c1b1b",
+                        "error-container": "#ffdad6",
+                        "surface-tint": "#805062",
+                        "on-surface-variant": "#504447",
+                        "tertiary-fixed-dim": "#cbc6bd",
+                        "primary-fixed": "#ffd9e4",
+                        "on-error": "#ffffff",
+                        "surface-container": "#f0eded",
+                        "on-secondary-container": "#fffbff",
+                        "surface-dim": "#dcd9d9",
+                        "cream": "#FFF9F0",
+                        "on-secondary-fixed-variant": "#90003b",
+                        "on-secondary-fixed": "#3f0016",
+                        "on-primary": "#ffffff",
+                        "surface-variant": "#e5e2e1",
+                        "surface-container-lowest": "#ffffff",
+                        "border-subtle": "#EFEFEF",
+                        "primary-fixed-dim": "#f2b6cb",
+                        "tertiary": "#615e57",
+                        "primary-container": "#f8bbd0",
+                        "surface-container-highest": "#e5e2e1",
+                        "surface-container-high": "#eae7e7",
+                        "surface": "#fcf9f8",
+                        "inverse-surface": "#313030"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "container-padding-mobile": "20px",
+                        "container-padding-desktop": "40px",
+                        "stack-sm": "8px",
+                        "base-unit": "4px",
+                        "section-gap": "64px",
+                        "gutter": "16px",
+                        "stack-md": "16px",
+                        "stack-lg": "32px"
+                    },
+                    "fontFamily": {
+                        "headline-sm": ["Inter"],
+                        "label-md": ["Inter"],
+                        "body-sm": ["Inter"],
+                        "display-lg-mobile": ["Inter"],
+                        "headline-md": ["Inter"],
+                        "body-md": ["Inter"],
+                        "button-text": ["Inter"],
+                        "display-lg": ["Inter"],
+                        "body-lg": ["Inter"]
+                    },
+                    "fontSize": {
+                        "headline-sm": ["20px", { "lineHeight": "28px", "fontWeight": "600" }],
+                        "label-md": ["12px", { "lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600" }],
+                        "body-sm": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
+                        "display-lg-mobile": ["32px", { "lineHeight": "38px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "headline-md": ["24px", { "lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+                        "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                        "button-text": ["16px", { "lineHeight": "24px", "fontWeight": "600" }],
+                        "display-lg": ["40px", { "lineHeight": "48px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "body-lg": ["18px", { "lineHeight": "28px", "fontWeight": "400" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .glass-effect {
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+        }
+        .flavor-card.selected {
+            border-color: #b7004d;
+            box-shadow: 0 0 0 2px #de2264;
+            transform: scale(1.02);
+        }
+        .flavor-card {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .check-animate {
+            animation: bounceIn 0.5s ease-out;
+        }
+        @keyframes bounceIn {
+            0% { transform: scale(0); opacity: 0; }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(1); opacity: 1; }
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-background font-body-md min-h-screen pb-32">
+<!-- Top AppBar -->
+<header class="fixed top-0 w-full z-50 bg-surface/80 dark:bg-surface-dark/80 backdrop-blur-xl shadow-sm flex items-center justify-between px-container-padding-mobile h-16 w-full">
+<div class="flex items-center gap-4">
+<button class="material-symbols-outlined text-primary active:scale-95 duration-200 transition-transform">arrow_back</button>
+<h1 class="font-display-lg-mobile text-display-lg-mobile text-secondary dark:text-secondary-fixed">Pastello</h1>
+</div>
+<button class="material-symbols-outlined text-primary active:scale-95 duration-200 transition-transform">shopping_bag</button>
+</header>
+<main class="pt-24 px-container-padding-mobile max-w-2xl mx-auto">
+<!-- Stepper -->
+<section class="mb-stack-lg">
+<div class="flex items-center justify-between relative mb-4">
+<div class="absolute top-1/2 left-0 w-full h-0.5 bg-outline-variant -z-10 -translate-y-1/2"></div>
+<div class="absolute top-1/2 left-0 w-1/3 h-0.5 bg-secondary -z-10 -translate-y-1/2 transition-all duration-500"></div>
+<!-- Step 1 Done -->
+<div class="w-8 h-8 rounded-full bg-secondary text-on-secondary flex items-center justify-center shadow-md">
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">check</span>
+</div>
+<!-- Step 2 Active -->
+<div class="w-10 h-10 rounded-full bg-secondary-container text-on-secondary-container flex items-center justify-center shadow-lg scale-110 border-4 border-background">
+<span class="font-bold">2</span>
+</div>
+<!-- Step 3 Inactive -->
+<div class="w-8 h-8 rounded-full bg-surface-variant text-on-surface-variant flex items-center justify-center border-2 border-outline-variant">
+<span>3</span>
+</div>
+<!-- Step 4 Inactive -->
+<div class="w-8 h-8 rounded-full bg-surface-variant text-on-surface-variant flex items-center justify-center border-2 border-outline-variant">
+<span>4</span>
+</div>
+</div>
+<p class="text-center font-headline-sm text-headline-sm text-primary">Sabor de Pan</p>
+</section>
+<!-- Flavor Grid -->
+<div class="grid grid-cols-1 gap-stack-md">
+<!-- Chocolate -->
+<div class="flavor-card relative overflow-hidden rounded-xl bg-surface-container-lowest border border-outline-variant cursor-pointer group hover:shadow-lg" onclick="selectFlavor(this)">
+<div class="flex items-center p-4 gap-4">
+<div class="w-24 h-24 rounded-lg overflow-hidden flex-shrink-0 bg-surface-variant">
+<img class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" data-alt="A macro photography shot of a decadent chocolate cake slice with deep mahogany crumb and glossy dark chocolate ganache. The lighting is warm and cinematic, highlighting the rich texture and moist consistency. The style is high-end culinary photography with a minimalist cream background and soft pink-toned shadows to match the brand identity." src="https://lh3.googleusercontent.com/aida-public/AB6AXuB6oc-AMVhxsZ0sJJ93GFqGp8GwMCx4QnwL36AZepGHPltHfVCiwUpQ9MYrYaZABslw-sINlURWqmHC_xCwHzh4W0_-VL_SDdAH44A-YuSQenVGLjWPmbomK5Uq85Z3rNYBKlIjtiFwAGQLAFtEUrZ3VfJu2asa7gQrmrRsVFCBpoum5Rhxq-3VcSMkWs447bJ19sSBMsCQvhjjvf5hTXJWJNSzYf67f-h9qxJX9ONOBH8btSYIeo90AyPN4McjkBfAQeRc0uvmXw"/>
+</div>
+<div class="flex-grow">
+<h3 class="font-headline-sm text-headline-sm text-on-surface mb-1">Chocolate Belga</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant leading-tight">Cacao puro 70% con notas de café y vainilla orgánica.</p>
+</div>
+<div class="check-icon hidden">
+<span class="material-symbols-outlined text-secondary-container text-3xl check-animate">check_circle</span>
+</div>
+</div>
+</div>
+<!-- Vainilla -->
+<div class="flavor-card relative overflow-hidden rounded-xl bg-surface-container-lowest border border-outline-variant cursor-pointer group hover:shadow-lg selected" onclick="selectFlavor(this)">
+<div class="flex items-center p-4 gap-4">
+<div class="w-24 h-24 rounded-lg overflow-hidden flex-shrink-0 bg-surface-variant">
+<img class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" data-alt="Close-up of a Madagascar vanilla bean cake slice, showing the delicate white crumb speckled with tiny black vanilla seeds. The lighting is bright and ethereal, creating a clean and premium look. The aesthetic is sophisticated and minimalist, featuring soft natural lighting and a high-end bakery presentation style with pastel pink accents." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCnZErJIWKufg_IdDewCZw6Wf92PrN0l36jJdlnbzgGMnYptyiuTcCZzLivkf1b90kGK7cqq9kG0P0-NjZehOPUd0ORAh1xc0f2-6dBks8_vuZaMUmGd-sMULySSDyzdESelL32l33Bp-KefYAQ5UaSCn9vSZj4oZUH6rLLHK2NUrFitNTH22K1q1uHw0-UgE6cnOmKoVjQ60zhAK6G6dLFe2uurOJif0ouPVby9xaYWpUpHZdiJRZou48ks02QYAgMQ2rA0ktrFw"/>
+</div>
+<div class="flex-grow">
+<h3 class="font-headline-sm text-headline-sm text-on-surface mb-1">Vainilla Francesa</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant leading-tight">Infusión de vainilla de Madagascar y mantequilla de alta calidad.</p>
+</div>
+<div class="check-icon block">
+<span class="material-symbols-outlined text-secondary-container text-3xl check-animate">check_circle</span>
+</div>
+</div>
+</div>
+<!-- Red Velvet -->
+<div class="flavor-card relative overflow-hidden rounded-xl bg-surface-container-lowest border border-outline-variant cursor-pointer group hover:shadow-lg" onclick="selectFlavor(this)">
+<div class="flex items-center p-4 gap-4">
+<div class="w-24 h-24 rounded-lg overflow-hidden flex-shrink-0 bg-surface-variant">
+<img class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" data-alt="A vibrant Red Velvet cake slice with its signature deep crimson color and velvet-like texture. The lighting is soft and diffused, emphasizing the contrast between the red sponge and a hint of white frosting nearby. The style is elegant and modern, with a high-end boutique feel and clean, airy composition on a neutral cream surface." src="https://lh3.googleusercontent.com/aida-public/AB6AXuC8N-xfxGalyBaUdKZZPW4Q_g_omBH7F1k1U7ZA3BdODSZMdvJZdgaTqD_jsakjOO0uIgGABYeT7TQXfvGsiB21ZAR3-bphmPMAffdvg6WcBnddDeZ4XJ_02lDjXFHsHBlzD9yR8TE6ovU7RI6rKktuvs4G7VxYjwTkaojAYBh5wsPwJvlwA6iURmGMMd1f8Yy6DrPa8ET7hKplQLHvKhtmwDuYC4oP84U7M-QxGcjauy3xYSf247rhQaUL8quY_pITqxf0NeCfvQ"/>
+</div>
+<div class="flex-grow">
+<h3 class="font-headline-sm text-headline-sm text-on-surface mb-1">Red Velvet</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant leading-tight">Toque sutil de cacao con un color carmesí vibrante y textura sedosa.</p>
+</div>
+<div class="check-icon hidden">
+<span class="material-symbols-outlined text-secondary-container text-3xl check-animate">check_circle</span>
+</div>
+</div>
+</div>
+<!-- Mantequilla -->
+<div class="flavor-card relative overflow-hidden rounded-xl bg-surface-container-lowest border border-outline-variant cursor-pointer group hover:shadow-lg" onclick="selectFlavor(this)">
+<div class="flex items-center p-4 gap-4">
+<div class="w-24 h-24 rounded-lg overflow-hidden flex-shrink-0 bg-surface-variant">
+<img class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" data-alt="A classic golden butter cake slice, showing a rich, dense, yet fluffy crumb. The lighting is warm and inviting, evoking a sense of nostalgic comfort and premium craftsmanship. The photography is clean and sharp, using a minimalist light-mode palette with subtle pink branding elements in the background." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDIWZ8fHUNEMQErPk3VYI_69oSUjHsumKebQg13qWMmexDCw6CYXYBPJInbKoAlfeQIQiJQBQ0ZLLZrKdSlQRBfB1_eOQ_Imegam4dOthStEnQLwap_3HlVPcT3s615XmpbFsyZ4HMwYKjyEtk5U2bDgtcRrDzVK7kqNcOiM8O9jfIL8-TQd9cOLIwRsWVs2szwssgZJZJJANBnhTl2FvbpLPdO2wzSTIAiHCWWOvS7nFBV8FlYASEz7sdZFEtSmXFg4E5sUYKPLA"/>
+</div>
+<div class="flex-grow">
+<h3 class="font-headline-sm text-headline-sm text-on-surface mb-1">Mantequilla Clásica</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant leading-tight">Sabor tradicional y reconfortante hecho con mantequilla artesanal.</p>
+</div>
+<div class="check-icon hidden">
+<span class="material-symbols-outlined text-secondary-container text-3xl check-animate">check_circle</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Add-on note -->
+<div class="mt-stack-lg p-4 bg-primary-container/30 rounded-xl border border-primary-container">
+<div class="flex gap-3">
+<span class="material-symbols-outlined text-primary">info</span>
+<p class="font-body-sm text-body-sm text-on-primary-container italic">
+                    ¿No encuentras lo que buscas? Podemos crear un sabor personalizado para eventos especiales. Contáctanos por chat.
+                </p>
+</div>
+</div>
+</main>
+<!-- Bottom Action Bar -->
+<footer class="fixed bottom-0 left-0 w-full z-50 bg-surface/80 dark:bg-surface-dark/80 backdrop-blur-xl shadow-[0_-4px_20px_rgba(0,0,0,0.05)] pt-4 pb-8 px-container-padding-mobile border-t border-border-subtle">
+<div class="max-w-2xl mx-auto flex items-center justify-between gap-4">
+<div class="flex flex-col">
+<span class="font-label-md text-label-md text-on-surface-variant uppercase tracking-wider">Total Estimado</span>
+<span class="font-headline-md text-headline-md text-secondary">$850.00</span>
+</div>
+<button class="flex-grow max-w-[200px] bg-secondary text-on-secondary font-button-text text-button-text py-4 rounded-full shadow-lg active:scale-95 duration-200 transition-all flex items-center justify-center gap-2">
+                Siguiente
+                <span class="material-symbols-outlined">arrow_forward</span>
+</button>
+</div>
+</footer>
+<script>
+        function selectFlavor(element) {
+            // Remove selection from all cards
+            document.querySelectorAll('.flavor-card').forEach(card => {
+                card.classList.remove('selected');
+                card.querySelector('.check-icon').classList.add('hidden');
+                card.querySelector('.check-icon').classList.remove('block');
+            });
+
+            // Add selection to clicked card
+            element.classList.add('selected');
+            const icon = element.querySelector('.check-icon');
+            icon.classList.remove('hidden');
+            icon.classList.add('block');
+
+            // Haptic-like interaction feedback
+            if (window.navigator.vibrate) {
+                window.navigator.vibrate(10);
+            }
+        }
+    </script>
+</body></html>

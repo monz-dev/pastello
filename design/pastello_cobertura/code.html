@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+
+<html class="light" lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+        }
+        .frosting-selected {
+            border: 2px solid #b7004d;
+            transform: scale(1.02);
+        }
+        @keyframes subtle-bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-4px); }
+        }
+        .animate-subtle {
+            animation: subtle-bounce 3s ease-in-out infinite;
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "inverse-on-surface": "#f3f0ef",
+                        "secondary-fixed-dim": "#ffb2bf",
+                        "surface-container-low": "#f6f3f2",
+                        "tertiary-fixed": "#e7e2d9",
+                        "on-background": "#1c1b1b",
+                        "surface-dark": "#121212",
+                        "error": "#ba1a1a",
+                        "primary": "#805062",
+                        "on-secondary": "#ffffff",
+                        "beige-soft": "#F5F5DC",
+                        "secondary-container": "#de2264",
+                        "on-tertiary-fixed": "#1d1b16",
+                        "surface-light": "#FFFFFF",
+                        "on-tertiary-container": "#58564f",
+                        "on-primary-fixed-variant": "#65394b",
+                        "secondary-fixed": "#ffd9de",
+                        "on-tertiary-fixed-variant": "#494640",
+                        "on-tertiary": "#ffffff",
+                        "surface-bright": "#fcf9f8",
+                        "tertiary-container": "#d0cbc3",
+                        "on-primary-fixed": "#330f1f",
+                        "on-error-container": "#93000a",
+                        "inverse-primary": "#f2b6cb",
+                        "outline": "#827377",
+                        "secondary": "#b7004d",
+                        "outline-variant": "#d4c2c6",
+                        "background": "#fcf9f8",
+                        "on-primary-container": "#76485a",
+                        "on-surface": "#1c1b1b",
+                        "error-container": "#ffdad6",
+                        "surface-tint": "#805062",
+                        "on-surface-variant": "#504447",
+                        "tertiary-fixed-dim": "#cbc6bd",
+                        "primary-fixed": "#ffd9e4",
+                        "on-error": "#ffffff",
+                        "surface-container": "#f0eded",
+                        "on-secondary-container": "#fffbff",
+                        "surface-dim": "#dcd9d9",
+                        "cream": "#FFF9F0",
+                        "on-secondary-fixed-variant": "#90003b",
+                        "on-secondary-fixed": "#3f0016",
+                        "on-primary": "#ffffff",
+                        "surface-variant": "#e5e2e1",
+                        "surface-container-lowest": "#ffffff",
+                        "border-subtle": "#EFEFEF",
+                        "primary-fixed-dim": "#f2b6cb",
+                        "tertiary": "#615e57",
+                        "primary-container": "#f8bbd0",
+                        "surface-container-highest": "#e5e2e1",
+                        "surface-container-high": "#eae7e7",
+                        "surface": "#fcf9f8",
+                        "inverse-surface": "#313030"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "container-padding-mobile": "20px",
+                        "container-padding-desktop": "40px",
+                        "stack-sm": "8px",
+                        "base-unit": "4px",
+                        "section-gap": "64px",
+                        "gutter": "16px",
+                        "stack-md": "16px",
+                        "stack-lg": "32px"
+                    },
+                    "fontFamily": {
+                        "headline-sm": ["Inter"],
+                        "label-md": ["Inter"],
+                        "body-sm": ["Inter"],
+                        "display-lg-mobile": ["Inter"],
+                        "headline-md": ["Inter"],
+                        "body-md": ["Inter"],
+                        "button-text": ["Inter"],
+                        "display-lg": ["Inter"],
+                        "body-lg": ["Inter"]
+                    },
+                    "fontSize": {
+                        "headline-sm": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                        "label-md": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                        "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                        "display-lg-mobile": ["32px", {"lineHeight": "38px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "headline-md": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                        "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                        "button-text": ["16px", {"lineHeight": "24px", "fontWeight": "600"}],
+                        "display-lg": ["40px", {"lineHeight": "48px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-surface font-body-md selection:bg-secondary/30">
+<!-- Top Navigation Bar -->
+<header class="fixed top-0 w-full z-50 bg-surface/80 dark:bg-surface-dark/80 backdrop-blur-xl shadow-sm flex items-center justify-between px-container-padding-mobile h-16">
+<button class="active:scale-95 duration-200 transition-transform text-primary">
+<span class="material-symbols-outlined">arrow_back</span>
+</button>
+<h1 class="font-display-lg-mobile text-[20px] font-bold text-secondary">Pastello</h1>
+<button class="active:scale-95 duration-200 transition-transform text-primary">
+<span class="material-symbols-outlined">close</span>
+</button>
+</header>
+<main class="pt-24 pb-40 px-container-padding-mobile max-w-lg mx-auto">
+<!-- Stepper -->
+<section class="mb-stack-lg">
+<div class="flex items-center justify-between mb-4">
+<span class="font-label-md text-label-md text-on-surface-variant">Paso 4 de 5</span>
+<span class="font-label-md text-label-md text-secondary font-bold uppercase tracking-wider">Cobertura</span>
+</div>
+<div class="flex gap-2 items-center">
+<div class="h-1.5 flex-1 rounded-full bg-secondary"></div>
+<div class="h-1.5 flex-1 rounded-full bg-secondary"></div>
+<div class="h-1.5 flex-1 rounded-full bg-secondary"></div>
+<div class="h-1.5 flex-1 rounded-full bg-secondary relative overflow-hidden">
+<div class="absolute inset-0 bg-white/30 animate-pulse"></div>
+</div>
+<div class="h-1.5 flex-1 rounded-full bg-surface-container-highest"></div>
+</div>
+</section>
+<!-- Main Title -->
+<section class="mb-stack-lg">
+<h2 class="font-headline-md text-headline-md text-on-surface mb-2">Elige tu cobertura</h2>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Selecciona la textura y el sabor que coronará tu creación única.</p>
+</section>
+<!-- Frosting Grid -->
+<div class="flex flex-col gap-gutter">
+<!-- Chocolate -->
+<div class="group relative bg-white rounded-xl overflow-hidden shadow-sm transition-all duration-300 hover:shadow-lg active:scale-[0.98] cursor-pointer border-2 border-transparent frosting-selected" onclick="selectFrosting(this)">
+<div class="h-48 w-full overflow-hidden">
+<img class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" data-alt="A high-end, close-up macro shot of rich, glossy dark chocolate ganache frosting being swirled on a cake. The texture is smooth and decadent, reflecting warm ambient lighting in a minimalist bakery setting. The color palette is deep cocoa brown and warm cream, emphasizing the premium quality of the ingredients. Minimalist and luxurious aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuB7kjmz7A-bo1vXZSvehpZGrupje8r9TNNJyyP7EUja2duFQuEZNbRo0yvbdfbHjdkE8jth80Hst4gKsgvoMc-y0guaCuIwhOZyMRVj1_LeMbSDBmplh4oTsQqYMbfff6bsfNMMQD54QM1EojbyVZ25lmR6SppY0Nyr_FVbhdsJwpN66402O_cAntqj09DmqfRWTLGpE44203H2VhQsphiA1iwbVxljf9ATB9qf4cCbMOJJT53SGwoUIkFVHksgoldVYCNhMiFWfA"/>
+</div>
+<div class="p-stack-md flex justify-between items-center">
+<div>
+<h3 class="font-headline-sm text-headline-sm text-on-surface">Chocolate</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Ganache de cacao 70%</p>
+</div>
+<div class="text-right">
+<span class="font-headline-sm text-headline-sm text-secondary">+$4.50</span>
+</div>
+</div>
+<div class="absolute top-4 right-4 bg-secondary text-white rounded-full p-1 opacity-100 transition-opacity">
+<span class="material-symbols-outlined text-[20px]" style="font-variation-settings: 'FILL' 1;">check</span>
+</div>
+</div>
+<!-- Queso Crema -->
+<div class="group relative bg-white rounded-xl overflow-hidden shadow-sm transition-all duration-300 hover:shadow-lg active:scale-[0.98] cursor-pointer border-2 border-transparent" onclick="selectFrosting(this)">
+<div class="h-48 w-full overflow-hidden">
+<img class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" data-alt="Close-up of a velvety smooth cream cheese frosting with a subtle matte finish and elegant pipe swirls. The lighting is soft and airy, creating a high-end minimalist atmosphere with a cream and off-white color palette. A few tiny flecks of vanilla bean are visible, highlighting the artisanal nature of the pastry. Elegant and sophisticated lighting." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCFsI-3J5Jhpbilgc3Z8lW66R9NI_G6owCnx8ty2SYGeuhxHdFmajbtQkMcLFaqbjSHud0hwYRugZsmSixhxHgGYTEp7gQwYAKRFvTc0Av76E9bO4udrVigmkRFWdvtBgW3dVW43E8tvuxSZ2XfCpMGf3noWbEeXXfztCRl73uP-kh-0IZ5Ca7Ykfv3Ig8h-QrTidxTnIZ7DILmAXjzNrUEHF-KiBfjPx2Qs4fx5fn12Rx995i2U4I91fRklWccwHq7YtP81S1WSw"/>
+</div>
+<div class="p-stack-md flex justify-between items-center">
+<div>
+<h3 class="font-headline-sm text-headline-sm text-on-surface">Queso Crema</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Suave y ligeramente ácido</p>
+</div>
+<div class="text-right">
+<span class="font-headline-sm text-headline-sm text-secondary">+$3.50</span>
+</div>
+</div>
+<div class="absolute top-4 right-4 bg-secondary text-white rounded-full p-1 opacity-0 transition-opacity">
+<span class="material-symbols-outlined text-[20px]" style="font-variation-settings: 'FILL' 1;">check</span>
+</div>
+</div>
+<!-- Oreo -->
+<div class="group relative bg-white rounded-xl overflow-hidden shadow-sm transition-all duration-300 hover:shadow-lg active:scale-[0.98] cursor-pointer border-2 border-transparent" onclick="selectFrosting(this)">
+<div class="h-48 w-full overflow-hidden">
+<img class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" data-alt="Macro photography of cookies and cream frosting, showing fine crumbles of chocolate cookies blended into a thick, white buttercream. The texture is rich and slightly grainy, with beautiful peaks and valleys. The lighting is high-key, emphasizing a modern, clean, and indulgent look within a boutique confectionery context. Monochromatic tones with hints of charcoal and soft white." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCMIQ15IZXkh2TgWP17hfu_H35mkueiLURQR5vwBnGvA5i-QJSTfrIqeIj6spMN_b4MchHyZ2L7C24yyFFFOPRtXchRe_EW-7GX7jMbuonXtBQ7wmeJcj3QGQvwfpWNPTAQUupc5yuygJkBwaocrDN9M8AOwFi6AdAnTxHAhT2EQ30GM_DuR4tQKP244p1xiIDOCXxd_ETIhunDhVzOARPc23MEh3AQilFt9_oDCrP1StTYKxcsolsYRhnaGUkUbbwNAJuhBtce_Q"/>
+</div>
+<div class="p-stack-md flex justify-between items-center">
+<div>
+<h3 class="font-headline-sm text-headline-sm text-on-surface">Oreo</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Cookies &amp; Cream artesanal</p>
+</div>
+<div class="text-right">
+<span class="font-headline-sm text-headline-sm text-secondary">+$5.00</span>
+</div>
+</div>
+<div class="absolute top-4 right-4 bg-secondary text-white rounded-full p-1 opacity-0 transition-opacity">
+<span class="material-symbols-outlined text-[20px]" style="font-variation-settings: 'FILL' 1;">check</span>
+</div>
+</div>
+</div>
+</main>
+<!-- Bottom Summary Bar -->
+<footer class="fixed bottom-0 left-0 w-full z-50 px-container-padding-mobile pb-8 pt-4 bg-surface/80 dark:bg-surface-dark/80 backdrop-blur-xl shadow-[0_-2px_10px_rgba(0,0,0,0.02)] rounded-t-xl">
+<div class="max-w-lg mx-auto flex flex-col gap-4">
+<div class="flex justify-between items-end">
+<div>
+<span class="font-label-md text-label-md text-on-surface-variant uppercase tracking-tighter">Total Estimado</span>
+<p class="font-display-lg-mobile text-display-lg-mobile text-on-surface">$42.50</p>
+</div>
+<div class="flex -space-x-2">
+<div class="w-10 h-10 rounded-full border-2 border-white bg-secondary-fixed flex items-center justify-center text-secondary">
+<span class="material-symbols-outlined text-sm">cake</span>
+</div>
+<div class="w-10 h-10 rounded-full border-2 border-white bg-primary-fixed flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-sm">cookie</span>
+</div>
+<div class="w-10 h-10 rounded-full border-2 border-white bg-secondary flex items-center justify-center text-white font-bold text-xs">
+                        +1
+                    </div>
+</div>
+</div>
+<button class="w-full h-14 bg-secondary text-on-secondary font-button-text text-button-text rounded-xl shadow-lg active:scale-95 duration-300 transition-all flex items-center justify-center gap-2 group">
+                Revisar Pedido
+                <span class="material-symbols-outlined transition-transform group-hover:translate-x-1">arrow_forward</span>
+</button>
+</div>
+</footer>
+<script>
+        function selectFrosting(element) {
+            // Remove selection from all cards
+            document.querySelectorAll('.frosting-selected').forEach(el => {
+                el.classList.remove('frosting-selected');
+                el.querySelector('.absolute.top-4.right-4').classList.add('opacity-0');
+                el.querySelector('.absolute.top-4.right-4').classList.remove('opacity-100');
+            });
+
+            // Add selection to clicked card
+            element.classList.add('frosting-selected');
+            const check = element.querySelector('.absolute.top-4.right-4');
+            check.classList.remove('opacity-0');
+            check.classList.add('opacity-100');
+
+            // Haptic feedback simulation
+            if (window.navigator && window.navigator.vibrate) {
+                window.navigator.vibrate(10);
+            }
+        }
+
+        // Add subtle parallax-ish effect on scroll for images
+        window.addEventListener('scroll', () => {
+            const images = document.querySelectorAll('img');
+            const speed = 0.1;
+            images.forEach(img => {
+                const rect = img.getBoundingClientRect();
+                if (rect.top < window.innerHeight && rect.bottom > 0) {
+                    const yPos = -(rect.top * speed);
+                    img.style.transform = `scale(1.1) translateY(${yPos}px)`;
+                }
+            });
+        });
+    </script>
+</body></html>

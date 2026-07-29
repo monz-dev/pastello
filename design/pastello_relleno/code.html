@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+
+<html class="light" lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Pastello - Elige tu Relleno</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                "inverse-on-surface": "#f3f0ef",
+                "secondary-fixed-dim": "#ffb2bf",
+                "surface-container-low": "#f6f3f2",
+                "tertiary-fixed": "#e7e2d9",
+                "on-background": "#1c1b1b",
+                "surface-dark": "#121212",
+                "error": "#ba1a1a",
+                "primary": "#805062",
+                "on-secondary": "#ffffff",
+                "beige-soft": "#F5F5DC",
+                "secondary-container": "#de2264",
+                "on-tertiary-fixed": "#1d1b16",
+                "surface-light": "#FFFFFF",
+                "on-tertiary-container": "#58564f",
+                "on-primary-fixed-variant": "#65394b",
+                "secondary-fixed": "#ffd9de",
+                "on-tertiary-fixed-variant": "#494640",
+                "on-tertiary": "#ffffff",
+                "surface-bright": "#fcf9f8",
+                "tertiary-container": "#d0cbc3",
+                "on-primary-fixed": "#330f1f",
+                "on-error-container": "#93000a",
+                "inverse-primary": "#f2b6cb",
+                "outline": "#827377",
+                "secondary": "#b7004d",
+                "outline-variant": "#d4c2c6",
+                "background": "#fcf9f8",
+                "on-primary-container": "#76485a",
+                "on-surface": "#1c1b1b",
+                "error-container": "#ffdad6",
+                "surface-tint": "#805062",
+                "on-surface-variant": "#504447",
+                "tertiary-fixed-dim": "#cbc6bd",
+                "primary-fixed": "#ffd9e4",
+                "on-error": "#ffffff",
+                "surface-container": "#f0eded",
+                "on-secondary-container": "#fffbff",
+                "surface-dim": "#dcd9d9",
+                "cream": "#FFF9F0",
+                "on-secondary-fixed-variant": "#90003b",
+                "on-secondary-fixed": "#3f0016",
+                "on-primary": "#ffffff",
+                "surface-variant": "#e5e2e1",
+                "surface-container-lowest": "#ffffff",
+                "border-subtle": "#EFEFEF",
+                "primary-fixed-dim": "#f2b6cb",
+                "tertiary": "#615e57",
+                "primary-container": "#f8bbd0",
+                "surface-container-highest": "#e5e2e1",
+                "surface-container-high": "#eae7e7",
+                "surface": "#fcf9f8",
+                "inverse-surface": "#313030"
+            },
+            "borderRadius": {
+                "DEFAULT": "0.25rem",
+                "lg": "0.5rem",
+                "xl": "0.75rem",
+                "full": "9999px"
+            },
+            "spacing": {
+                "container-padding-mobile": "20px",
+                "container-padding-desktop": "40px",
+                "stack-sm": "8px",
+                "base-unit": "4px",
+                "section-gap": "64px",
+                "gutter": "16px",
+                "stack-md": "16px",
+                "stack-lg": "32px"
+            },
+            "fontFamily": {
+                "headline-sm": ["Inter"],
+                "label-md": ["Inter"],
+                "body-sm": ["Inter"],
+                "display-lg-mobile": ["Inter"],
+                "headline-md": ["Inter"],
+                "body-md": ["Inter"],
+                "button-text": ["Inter"],
+                "display-lg": ["Inter"],
+                "body-lg": ["Inter"]
+            },
+            "fontSize": {
+                "headline-sm": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                "label-md": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                "display-lg-mobile": ["32px", {"lineHeight": "38px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                "headline-md": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                "button-text": ["16px", {"lineHeight": "24px", "fontWeight": "600"}],
+                "display-lg": ["40px", {"lineHeight": "48px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}]
+            }
+          }
+        }
+      }
+    </script>
+<style>
+        .glass-nav {
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+        }
+        .filling-card.active {
+            border-color: #b7004d;
+            box-shadow: 0 0 0 2px #b7004d;
+            transform: scale(0.98);
+        }
+        .filling-card.active .check-icon {
+            opacity: 1;
+        }
+        @keyframes subtle-zoom {
+            from { transform: scale(1); }
+            to { transform: scale(1.05); }
+        }
+        .hover-zoom:hover img {
+            animation: subtle-zoom 0.5s forwards ease-out;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-surface font-body-md min-h-screen pb-32">
+<!-- Top AppBar (from Shared Components) -->
+<header class="fixed top-0 w-full z-50 bg-surface/80 dark:bg-surface-dark/80 backdrop-blur-xl shadow-sm flex items-center justify-between px-container-padding-mobile h-16">
+<button class="text-primary dark:text-primary-fixed-dim active:scale-95 duration-200 transition-transform">
+<span class="material-symbols-outlined" data-icon="menu">menu</span>
+</button>
+<h1 class="font-display-lg-mobile text-display-lg-mobile text-secondary dark:text-secondary-fixed">Pastello</h1>
+<button class="text-primary dark:text-primary-fixed-dim active:scale-95 duration-200 transition-transform">
+<span class="material-symbols-outlined" data-icon="shopping_bag">shopping_bag</span>
+</button>
+</header>
+<main class="pt-24 px-container-padding-mobile max-w-lg mx-auto">
+<!-- Stepper -->
+<section class="mb-stack-lg">
+<div class="flex items-center justify-between relative px-2">
+<!-- Line -->
+<div class="absolute top-1/2 left-0 w-full h-0.5 bg-outline-variant -translate-y-1/2 z-0"></div>
+<!-- Progress Line -->
+<div class="absolute top-1/2 left-0 w-1/2 h-0.5 bg-secondary -translate-y-1/2 z-0 transition-all duration-500"></div>
+<!-- Steps -->
+<div class="relative z-10 flex flex-col items-center">
+<div class="w-8 h-8 rounded-full bg-secondary text-on-secondary flex items-center justify-center text-label-md font-bold">1</div>
+<span class="mt-2 text-[10px] font-label-md text-secondary uppercase tracking-widest">Base</span>
+</div>
+<div class="relative z-10 flex flex-col items-center">
+<div class="w-8 h-8 rounded-full bg-secondary text-on-secondary flex items-center justify-center text-label-md font-bold">2</div>
+<span class="mt-2 text-[10px] font-label-md text-secondary uppercase tracking-widest">Sabor</span>
+</div>
+<div class="relative z-10 flex flex-col items-center">
+<div class="w-10 h-10 rounded-full bg-secondary text-on-secondary flex items-center justify-center text-label-md font-bold shadow-lg scale-110 border-4 border-surface">3</div>
+<span class="mt-2 text-[10px] font-label-md text-secondary font-bold uppercase tracking-widest">Relleno</span>
+</div>
+<div class="relative z-10 flex flex-col items-center">
+<div class="w-8 h-8 rounded-full bg-surface-container-high text-on-surface-variant flex items-center justify-center text-label-md font-bold border border-outline-variant">4</div>
+<span class="mt-2 text-[10px] font-label-md text-on-surface-variant uppercase tracking-widest">Decor</span>
+</div>
+</div>
+</section>
+<!-- Title Section -->
+<header class="mb-stack-lg text-center">
+<h2 class="font-headline-md text-headline-md text-on-surface mb-stack-sm">Elige el Corazón</h2>
+<p class="text-on-surface-variant font-body-sm px-4">El relleno define la personalidad de tu pastel. Selecciona una opción premium de nuestra cava de repostería.</p>
+</header>
+<!-- Filling Selection Grid -->
+<section class="grid grid-cols-1 gap-stack-md pb-12">
+<!-- Nutella -->
+<div class="filling-card group relative bg-surface-container-lowest rounded-xl overflow-hidden border border-border-subtle shadow-sm transition-all duration-300 active:scale-95 cursor-pointer hover:shadow-md" onclick="selectFilling(this)">
+<div class="flex h-32">
+<div class="w-1/3 overflow-hidden">
+<img class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" data-alt="A close-up, high-resolution shot of thick, velvety hazelnut chocolate cream being swirled. The lighting is warm and cinematic, highlighting the glossy texture of the Nutella. The overall aesthetic is gourmet and indulgent, fitting for a luxury bakery setting with soft-focus backgrounds." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCesG44RkdbWZQMpUCSOmo21fsgdTPM-48olDmC7lDnt0_uwsh46dQIhinrogmfkky0N-gDB0ezvvWLBai3-77XGp39y3J6iEUzp3YbEndKd2lSGGAiHnj-d26-8bNNC8JL_j68abQ0ZiO7V_jjXyuPxnUWVMHCpPKi114fyjhu30VG6euNoJpsIAC9gQo3bKsUzMZoQMz81efurDev4FRgEL0MrgOjOYBPgGzSF0g2qLN7xqMtbua2uW7m9xj5B1XpWDJisl5lLw"/>
+</div>
+<div class="w-2/3 p-4 flex flex-col justify-center">
+<div class="flex justify-between items-start">
+<h3 class="font-headline-sm text-headline-sm text-on-surface">Nutella</h3>
+<span class="material-symbols-outlined text-secondary opacity-0 check-icon transition-opacity" data-icon="check_circle" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+</div>
+<p class="text-on-surface-variant text-body-sm leading-snug">Crema de avellanas original con cacao, textura densa y reconfortante.</p>
+</div>
+</div>
+</div>
+<!-- Queso Crema -->
+<div class="filling-card group relative bg-surface-container-lowest rounded-xl overflow-hidden border border-border-subtle shadow-sm transition-all duration-300 active:scale-95 cursor-pointer hover:shadow-md active" onclick="selectFilling(this)">
+<div class="flex h-32">
+<div class="w-1/3 overflow-hidden">
+<img class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" data-alt="A macro shot of whipped cream cheese frosting being piped into a delicate swirl. The color is a pristine, airy white against a soft beige background. The lighting is bright and airy, creating a fresh, clean, and high-end boutique feel. Fine sugar crystals are barely visible on the surface." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBA1VV0Fp6gFBMahMgjDqHDc58FpxhVTNNtP5EyHNJ7Xlw7bEOhHmDENj5gMBuLbGPOKAKdo7kMjkTKelEm9QPC49wZVaf9EVyO5PVQrWknmEh57z9cdIQ_YGRfv_cmHp6rvYuHanOL468xuAzerzW5u9yMsV0dHhkeYR_C2gPsuRdbK4gcsBo7J2xFFw4QC6Nn2xy9gnFduzmcr6RAYQmfkp_A6Ab0GX8mpSAEFzIWrUB7u8q0r9LuXVDxSN6KQQUt5gPY9RMqYw"/>
+</div>
+<div class="w-2/3 p-4 flex flex-col justify-center">
+<div class="flex justify-between items-start">
+<h3 class="font-headline-sm text-headline-sm text-on-surface">Queso Crema</h3>
+<span class="material-symbols-outlined text-secondary opacity-100 check-icon transition-opacity" data-icon="check_circle" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+</div>
+<p class="text-on-surface-variant text-body-sm leading-snug">Frosting de queso sedoso con un toque cítrico y equilibrio perfecto.</p>
+</div>
+</div>
+</div>
+<!-- Oreo -->
+<div class="filling-card group relative bg-surface-container-lowest rounded-xl overflow-hidden border border-border-subtle shadow-sm transition-all duration-300 active:scale-95 cursor-pointer hover:shadow-md" onclick="selectFilling(this)">
+<div class="flex h-32">
+<div class="w-1/3 overflow-hidden">
+<img class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" data-alt="Close-up of a 'cookies and cream' filling, showing visible chunks of dark chocolate cookies suspended in a thick, sweet white cream. The contrast between the dark crumbs and white filling is sharp and appetizing. The shot has a commercial photography style with clean edges and vibrant tones." src="https://lh3.googleusercontent.com/aida-public/AB6AXuB4w_C-0JN8qm_snIZlIs0FIAQbIE_fT5l_fbuT85zJhJV4HL__YC3o632O03PwfV5eTNHp7gu5HP9LXCBGAIIKFbGHQjucu2MfdsGBbgYNqCX6SJ9lXL-ZF0kX5Lk10eh3nwg6GcZMEEbzIq2Qx1svQqRaNkLi0IA6r7B1InY7Emyw_7gclP7H4S0wgRAv5EShM3Pa_f53LC0DdQ9jK2eSXuRUJjLitzCOVIKEhOD_LEbYmhFUTCkLdsanafFFSZuzpoBOHemODA"/>
+</div>
+<div class="w-2/3 p-4 flex flex-col justify-center">
+<div class="flex justify-between items-start">
+<h3 class="font-headline-sm text-headline-sm text-on-surface">Oreo</h3>
+<span class="material-symbols-outlined text-secondary opacity-0 check-icon transition-opacity" data-icon="check_circle" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+</div>
+<p class="text-on-surface-variant text-body-sm leading-snug">Trozos de galleta crujiente inmersos en nuestra crema batida secreta.</p>
+</div>
+</div>
+</div>
+<!-- Chocolate -->
+<div class="filling-card group relative bg-surface-container-lowest rounded-xl overflow-hidden border border-border-subtle shadow-sm transition-all duration-300 active:scale-95 cursor-pointer hover:shadow-md" onclick="selectFilling(this)">
+<div class="flex h-32">
+<div class="w-1/3 overflow-hidden">
+<img class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" data-alt="A river of flowing, dark molten Belgian chocolate. The surface is glossy and reflects soft studio lights. The deep brown tones are rich and saturated, suggesting a high-cocoa content and premium quality. The mood is dark, elegant, and sophisticated, emphasizing luxury confectionery." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBqeVYjzXgGU6hA5LhTLTH3GYdFDL1dMqboLvt-EaxTB_uf9D6vLK48WoJL0ZBFx_UB5TFYa0KIFoiA4NrAOwKeXDOQ1KxZ7k3S3LgOV9KlKNmqI4fnQy0trub5Tcea9qMOjFFue191bbBwWeoyjZYfkmKDpps8lligXIgLYLa5d8IH9gbxxVzygsSTx7qqyXj-R0wdZ2iOSGqsfzbHci532SNNoS77BUASasOIxfFJi8sQn4xZ2ESTij-kLJ8BP34A_Bz63zjyPA"/>
+</div>
+<div class="w-2/3 p-4 flex flex-col justify-center">
+<div class="flex justify-between items-start">
+<h3 class="font-headline-sm text-headline-sm text-on-surface">Chocolate</h3>
+<span class="material-symbols-outlined text-secondary opacity-0 check-icon transition-opacity" data-icon="check_circle" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+</div>
+<p class="text-on-surface-variant text-body-sm leading-snug">Ganache de chocolate belga 70% cacao, intenso y profundamente aromático.</p>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- Bottom Bar / CTA -->
+<footer class="fixed bottom-0 left-0 w-full z-50 bg-surface/90 backdrop-blur-2xl px-container-padding-mobile pt-4 pb-8 border-t border-border-subtle flex items-center justify-between">
+<div class="flex flex-col">
+<span class="text-label-md font-label-md text-on-surface-variant uppercase">Subtotal Estimado</span>
+<span class="text-headline-md font-headline-md text-secondary">$450.00</span>
+</div>
+<button class="bg-secondary text-on-secondary px-8 py-3 rounded-full font-button-text text-button-text flex items-center gap-2 shadow-lg hover:bg-secondary/90 active:scale-95 transition-all">
+            Siguiente
+            <span class="material-symbols-outlined text-[20px]" data-icon="arrow_forward">arrow_forward</span>
+</button>
+</footer>
+<!-- Bottom Navigation (Shared Component Integration) -->
+<!-- Suppressed for transactional/task-focused customizer screen per rule -->
+<script>
+        function selectFilling(element) {
+            // Remove active class from all
+            document.querySelectorAll('.filling-card').forEach(card => {
+                card.classList.remove('active');
+                card.querySelector('.check-icon').classList.add('opacity-0');
+                card.querySelector('.check-icon').classList.remove('opacity-100');
+            });
+            
+            // Add to selected
+            element.classList.add('active');
+            element.querySelector('.check-icon').classList.remove('opacity-0');
+            element.querySelector('.check-icon').classList.add('opacity-100');
+
+            // Haptic-like feedback animation trigger
+            element.style.transform = "scale(0.95)";
+            setTimeout(() => {
+                element.style.transform = "scale(0.98)";
+            }, 100);
+        }
+    </script>
+</body></html>

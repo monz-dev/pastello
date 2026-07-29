@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+
+<html class="light" lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Pastello - Constructor de Pastel</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                "on-secondary-container": "#fffbff",
+                "surface-bright": "#fcf9f8",
+                "inverse-on-surface": "#f3f0ef",
+                "on-primary-fixed-variant": "#65394b",
+                "secondary-fixed-dim": "#ffb2bf",
+                "surface-light": "#FFFFFF",
+                "on-secondary-fixed-variant": "#90003b",
+                "on-tertiary": "#ffffff",
+                "border-subtle": "#EFEFEF",
+                "inverse-primary": "#f2b6cb",
+                "primary-fixed": "#ffd9e4",
+                "on-error-container": "#93000a",
+                "on-secondary": "#ffffff",
+                "surface-variant": "#e5e2e1",
+                "on-surface": "#1c1b1b",
+                "surface-dim": "#dcd9d9",
+                "on-tertiary-fixed": "#1d1b16",
+                "tertiary-fixed": "#e7e2d9",
+                "on-primary": "#ffffff",
+                "tertiary-fixed-dim": "#cbc6bd",
+                "outline-variant": "#d4c2c6",
+                "surface-container-highest": "#e5e2e1",
+                "outline": "#827377",
+                "on-background": "#1c1b1b",
+                "primary-container": "#f8bbd0",
+                "tertiary": "#615e57",
+                "on-error": "#ffffff",
+                "secondary": "#b7004d",
+                "on-primary-fixed": "#330f1f",
+                "background": "#fcf9f8",
+                "tertiary-container": "#d0cbc3",
+                "error-container": "#ffdad6",
+                "primary": "#805062",
+                "secondary-container": "#de2264",
+                "surface-tint": "#805062",
+                "surface-dark": "#121212",
+                "on-secondary-fixed": "#3f0016",
+                "cream": "#FFF9F0",
+                "on-primary-container": "#76485a",
+                "surface-container-lowest": "#ffffff",
+                "secondary-fixed": "#ffd9de",
+                "surface-container": "#f0eded",
+                "inverse-surface": "#313030",
+                "surface-container-low": "#f6f3f2",
+                "error": "#ba1a1a",
+                "primary-fixed-dim": "#f2b6cb",
+                "beige-soft": "#F5F5DC",
+                "surface-container-high": "#eae7e7",
+                "surface": "#fcf9f8",
+                "on-surface-variant": "#504447",
+                "on-tertiary-container": "#58564f",
+                "on-tertiary-fixed-variant": "#494640"
+            },
+            "borderRadius": {
+                "DEFAULT": "0.25rem",
+                "lg": "0.5rem",
+                "xl": "0.75rem",
+                "full": "9999px"
+            },
+            "spacing": {
+                "section-gap": "64px",
+                "container-padding-mobile": "20px",
+                "base-unit": "4px",
+                "container-padding-desktop": "40px",
+                "stack-sm": "8px",
+                "stack-md": "16px",
+                "stack-lg": "32px",
+                "gutter": "16px"
+            },
+            "fontFamily": {
+                "body-lg": ["Inter"],
+                "headline-sm": ["Inter"],
+                "body-sm": ["Inter"],
+                "display-lg-mobile": ["Inter"],
+                "button-text": ["Inter"],
+                "label-md": ["Inter"],
+                "display-lg": ["Inter"],
+                "headline-md": ["Inter"],
+                "body-md": ["Inter"]
+            },
+            "fontSize": {
+                "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                "headline-sm": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                "display-lg-mobile": ["32px", {"lineHeight": "38px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                "button-text": ["16px", {"lineHeight": "24px", "fontWeight": "600"}],
+                "label-md": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                "display-lg": ["40px", {"lineHeight": "48px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                "headline-md": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}]
+            }
+          }
+        }
+      }
+    </script>
+<style>
+      .glass-effect {
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+      }
+      .material-symbols-outlined {
+        font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+      }
+      .card-zoom:hover .image-container {
+        transform: scale(1.05);
+      }
+      .custom-scrollbar::-webkit-scrollbar {
+        width: 4px;
+      }
+      .custom-scrollbar::-webkit-scrollbar-thumb {
+        background: #f8bbd0;
+        border-radius: 10px;
+      }
+      @keyframes soft-bounce {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(-4px); }
+      }
+      .active-step-glow {
+        box-shadow: 0 0 15px rgba(183, 0, 77, 0.3);
+      }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface font-body-md text-on-surface custom-scrollbar">
+<!-- TopAppBar -->
+<nav class="fixed top-0 w-full z-50 bg-surface/80 dark:bg-surface-dark/80 backdrop-blur-xl shadow-sm flex items-center justify-between px-container-padding-mobile h-16 w-full">
+<button class="text-primary dark:text-primary-fixed-dim hover:opacity-80 transition-opacity active:scale-95 duration-200 transition-transform">
+<span class="material-symbols-outlined">menu</span>
+</button>
+<span class="font-display-lg-mobile text-display-lg-mobile text-secondary dark:text-secondary-fixed">Pastello</span>
+<button class="text-primary dark:text-primary-fixed-dim hover:opacity-80 transition-opacity active:scale-95 duration-200 transition-transform">
+<span class="material-symbols-outlined">shopping_bag</span>
+</button>
+</nav>
+<main class="pt-24 pb-32 px-container-padding-mobile max-w-[1280px] mx-auto min-h-screen">
+<!-- Stepper Component -->
+<div class="mb-stack-lg">
+<div class="flex items-center justify-between relative mb-stack-sm">
+<!-- Step Line -->
+<div class="absolute top-1/2 left-0 w-full h-[2px] bg-surface-variant -translate-y-1/2 z-0"></div>
+<div class="absolute top-1/2 left-0 w-[25%] h-[2px] bg-secondary -translate-y-1/2 z-0 transition-all duration-500" id="stepper-progress"></div>
+<!-- Steps -->
+<div class="z-10 flex flex-col items-center gap-1">
+<div class="w-8 h-8 rounded-full bg-secondary text-on-secondary flex items-center justify-center font-bold active-step-glow transition-all duration-300">1</div>
+<span class="font-label-md text-label-md text-secondary">Tamaño</span>
+</div>
+<div class="z-10 flex flex-col items-center gap-1">
+<div class="w-8 h-8 rounded-full bg-surface-variant text-on-surface-variant flex items-center justify-center font-bold">2</div>
+<span class="font-label-md text-label-md text-on-surface-variant">Sabor</span>
+</div>
+<div class="z-10 flex flex-col items-center gap-1">
+<div class="w-8 h-8 rounded-full bg-surface-variant text-on-surface-variant flex items-center justify-center font-bold">3</div>
+<span class="font-label-md text-label-md text-on-surface-variant">Relleno</span>
+</div>
+<div class="z-10 flex flex-col items-center gap-1">
+<div class="w-8 h-8 rounded-full bg-surface-variant text-on-surface-variant flex items-center justify-center font-bold">4</div>
+<span class="font-label-md text-label-md text-on-surface-variant">Diseño</span>
+</div>
+</div>
+</div>
+<!-- Section Header -->
+<header class="mb-stack-lg text-center">
+<h1 class="font-display-lg-mobile text-display-lg-mobile text-on-surface mb-2">Paso 1: Elige el tamaño</h1>
+<p class="font-body-md text-body-md text-on-surface-variant">Selecciona las dimensiones perfectas para tu celebración.</p>
+</header>
+<!-- Selection Grid -->
+<section class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-gutter mb-section-gap">
+<!-- Mini -->
+<label class="group cursor-pointer">
+<input checked="" class="hidden peer" name="cake-size" type="radio"/>
+<div class="h-full bg-surface-light rounded-xl overflow-hidden shadow-sm border-2 border-transparent peer-checked:border-secondary transition-all duration-300 flex flex-col card-zoom hover:shadow-md">
+<div class="aspect-square relative overflow-hidden">
+<div class="image-container w-full h-full bg-cover bg-center transition-transform duration-700 ease-out" data-alt="A macro shot of a tiny, perfectly round artisanal mini cake with smooth pink buttercream frosting and a single delicate sugar flower on top. The lighting is soft and airy, highlighting the creamy texture of the frosting. The setting is a minimalist, high-end pastry boutique with white marble surfaces. The aesthetic is clean, sophisticated, and focused on exquisite confectionery craftsmanship." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuBKKL1R1xRjx3-rsn8J2zVWYgH_FHdkjkvlbT4cgD8qOd3VmlkbuYvHPH32SfHU1haJa0_PKJSF1tGOBce1K9AtG6lALd7bJ0TEPGulaKlOp0QWrMnSc9nrmT-dojzPAxUuiyz1X6SP0ECT_Jh6InJ4JLGzuxDh93bdLzdzen7arwiRwb0sfs_fZbGTPoVjYxTx-annOklgVQrzq6QudEiip8-8Cvgk2hDjWAi7ULy3aqTWSLhrKP6W3Y1gjhx_rPd1QTZXV2_s2w')"></div>
+</div>
+<div class="p-4 flex flex-col flex-grow">
+<div class="flex justify-between items-start mb-2">
+<h3 class="font-headline-sm text-headline-sm text-on-surface">Mini</h3>
+<span class="font-headline-sm text-headline-sm text-secondary">$180</span>
+</div>
+<div class="flex items-center gap-2 mb-stack-sm">
+<span class="material-symbols-outlined text-[18px] text-on-surface-variant">straighten</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">7 cm de diámetro</span>
+</div>
+<div class="flex items-center gap-2 mt-auto">
+<span class="material-symbols-outlined text-[18px] text-on-surface-variant">groups</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Personal (1 persona)</span>
+</div>
+</div>
+</div>
+</label>
+<!-- Chico -->
+<label class="group cursor-pointer">
+<input class="hidden peer" name="cake-size" type="radio"/>
+<div class="h-full bg-surface-light rounded-xl overflow-hidden shadow-sm border-2 border-transparent peer-checked:border-secondary transition-all duration-300 flex flex-col card-zoom hover:shadow-md">
+<div class="aspect-square relative overflow-hidden">
+<div class="image-container w-full h-full bg-cover bg-center transition-transform duration-700 ease-out" data-alt="A beautiful small round cake with layers of light vanilla sponge visible through a semi-naked frosting finish, topped with fresh seasonal berries and a dusting of powdered sugar. The scene is bright and expansive with warm, natural sunlight casting soft shadows. The visual style is minimal and premium, emphasizing the organic ingredients and elegant presentation in a modern bakery environment." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuBogre3-3J4YbEddDOAwcLEJr_XDG4ewDU9wlzimcBDFofwbDyrT8YxRsmux15tinZdwGK6CgoNo39GI7Bhumr6G1XTxT6HCNfPo3MfTKeEea30805pMRsiuAgprAhZtWIJk4w1tBFpwNSVlZIkFH0LpYi1Uy26qSjY-rXpJJ6hv_NPOyEYXSBXXIBTuUuAYRDgs_cM-O7xYRtuck3rY3q0mGz1HcV92eMEWMNmoevmOgnnUBNX9S8vZWbShyr_mfElHB92o__ORg')"></div>
+</div>
+<div class="p-4 flex flex-col flex-grow">
+<div class="flex justify-between items-start mb-2">
+<h3 class="font-headline-sm text-headline-sm text-on-surface">Chico</h3>
+<span class="font-headline-sm text-headline-sm text-secondary">$350</span>
+</div>
+<div class="flex items-center gap-2 mb-stack-sm">
+<span class="material-symbols-outlined text-[18px] text-on-surface-variant">straighten</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">12 cm de diámetro</span>
+</div>
+<div class="flex items-center gap-2 mt-auto">
+<span class="material-symbols-outlined text-[18px] text-on-surface-variant">groups</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">4 a 6 personas</span>
+</div>
+</div>
+</div>
+</label>
+<!-- Grande -->
+<label class="group cursor-pointer">
+<input class="hidden peer" name="cake-size" type="radio"/>
+<div class="h-full bg-surface-light rounded-xl overflow-hidden shadow-sm border-2 border-transparent peer-checked:border-secondary transition-all duration-300 flex flex-col card-zoom hover:shadow-md">
+<div class="aspect-square relative overflow-hidden">
+<div class="image-container w-full h-full bg-cover bg-center transition-transform duration-700 ease-out" data-alt="A sophisticated large celebration cake with intricate piped buttercream details in a soft pastel palette. The cake is perfectly centered on a white ceramic pedestal against a clean, off-white studio background. High-quality food photography lighting creates a soft glow around the dessert, highlighting its height and premium finish. Minimalist and expansive aesthetic." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuAQLY1XY3ZcKkTIhNRntfj42Xtg2ktI7psG8BH588KmPUQ4p_MpCvLr-W6rhWfMBQT9mnc1UO-fYlzx-JhdgXG8PcLBrX9dfNedr2IrI_C0SPtrEAD2LzQydGLV3ZaNER2bZcwAvUy_cDh-0w72SX5_xdHO5mQI3N9PUqdQHD9jIaqj59vddZzysGaLEcxupdsVQLOUUnEUZ3Zg__bHc6rtbcK8s5TPARh9Jlrcq17Y1YCucT-kcz8DiJf_vR8iaSi_cpwZj2oUtg')"></div>
+</div>
+<div class="p-4 flex flex-col flex-grow">
+<div class="flex justify-between items-start mb-2">
+<h3 class="font-headline-sm text-headline-sm text-on-surface">Grande</h3>
+<span class="font-headline-sm text-headline-sm text-secondary">$580</span>
+</div>
+<div class="flex items-center gap-2 mb-stack-sm">
+<span class="material-symbols-outlined text-[18px] text-on-surface-variant">straighten</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">14 cm de diámetro</span>
+</div>
+<div class="flex items-center gap-2 mt-auto">
+<span class="material-symbols-outlined text-[18px] text-on-surface-variant">groups</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">8 a 10 personas</span>
+</div>
+</div>
+</div>
+</label>
+<!-- Doble piso -->
+<label class="group cursor-pointer">
+<input class="hidden peer" name="cake-size" type="radio"/>
+<div class="h-full bg-surface-light rounded-xl overflow-hidden shadow-sm border-2 border-transparent peer-checked:border-secondary transition-all duration-300 flex flex-col card-zoom hover:shadow-md">
+<div class="aspect-square relative overflow-hidden">
+<div class="image-container w-full h-full bg-cover bg-center transition-transform duration-700 ease-out" data-alt="A grand two-tier luxury cake for special events, featuring a smooth, matte fondant finish and metallic gold leaf accents. The tiers are elegantly proportioned, standing tall on a marble counter in a sun-drenched upscale boutique. The atmosphere is one of effortless sophistication and celebration. Soft shadows and high-key lighting emphasize the impressive architectural form of the cake." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuArUEzIYVT4SmJAnQLUpER9QheRCH7LbtMzVXLxBXLDUuBXoZpckt2RttP1GjfGTm2HaVxCyK4U9GaF3Fnr_9JDNJl9k-KWZrmc8mU9uki9HJzZBZv5zPLBrIckvyUsMy9G4Tf20ye201LZ0AcjBoiO8OWK0vLvWzpQPwlPCYW7k1VnFyZpM77fpTCn3q4NedIHLNZiUcW8IutY-AlKzA5EKqQtkRvXCkcaE4efxyBrCI8tKZhKK4vwIzK-r0dtVQGnLDSxUn58jg')"></div>
+</div>
+<div class="p-4 flex flex-col flex-grow">
+<div class="flex justify-between items-start mb-2">
+<h3 class="font-headline-sm text-headline-sm text-on-surface">Doble piso</h3>
+<span class="font-headline-sm text-headline-sm text-secondary">$1,200</span>
+</div>
+<div class="flex items-center gap-2 mb-stack-sm">
+<span class="material-symbols-outlined text-[18px] text-on-surface-variant">layers</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">18 cm + 12 cm</span>
+</div>
+<div class="flex items-center gap-2 mt-auto">
+<span class="material-symbols-outlined text-[18px] text-on-surface-variant">groups</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">15 a 20 personas</span>
+</div>
+</div>
+</div>
+</label>
+</section>
+<!-- Action Bar -->
+<div class="fixed bottom-20 left-0 w-full px-container-padding-mobile md:px-0 flex justify-center z-40">
+<div class="w-full max-w-[600px] bg-surface/90 glass-effect p-4 rounded-full shadow-lg flex items-center justify-between border border-white/20">
+<div class="flex flex-col pl-4">
+<span class="font-label-md text-label-md text-on-surface-variant">TOTAL ESTIMADO</span>
+<span class="font-headline-md text-headline-md text-on-surface" id="total-price">$180.00</span>
+</div>
+<button class="bg-secondary-container text-on-secondary-container font-button-text text-button-text px-8 py-3 rounded-full hover:opacity-90 active:scale-95 transition-all duration-200 shadow-md flex items-center gap-2">
+                    Siguiente
+                    <span class="material-symbols-outlined">arrow_forward</span>
+</button>
+</div>
+</div>
+</main>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-2 pb-4 pt-2 bg-surface/80 dark:bg-surface-dark/80 backdrop-blur-xl shadow-[0_-2px_10px_rgba(0,0,0,0.02)] rounded-t-xl">
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:bg-surface-variant/50 transition-colors px-4 py-1 active:scale-90 duration-300" href="#">
+<span class="material-symbols-outlined" data-icon="home">home</span>
+<span class="font-label-md text-label-md">Inicio</span>
+</a>
+<a class="flex flex-col items-center justify-center bg-secondary-container text-on-secondary-container rounded-full px-4 py-1 active:scale-90 duration-300" href="#">
+<span class="material-symbols-outlined" data-icon="cake">cake</span>
+<span class="font-label-md text-label-md">Crear</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:bg-surface-variant/50 transition-colors px-4 py-1 active:scale-90 duration-300" href="#">
+<span class="material-symbols-outlined" data-icon="receipt_long">receipt_long</span>
+<span class="font-label-md text-label-md">Pedidos</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:bg-surface-variant/50 transition-colors px-4 py-1 active:scale-90 duration-300" href="#">
+<span class="material-symbols-outlined" data-icon="person">person</span>
+<span class="font-label-md text-label-md">Perfil</span>
+</a>
+</nav>
+<script>
+        // Simple micro-interaction for size selection and price update
+        const radios = document.querySelectorAll('input[name="cake-size"]');
+        const priceDisplay = document.getElementById('total-price');
+
+        radios.forEach(radio => {
+            radio.addEventListener('change', (e) => {
+                const card = e.target.nextElementSibling;
+                const price = card.querySelector('.text-secondary').innerText;
+                priceDisplay.innerText = `${price}.00`;
+                
+                // Visual feedback
+                card.style.transform = 'scale(0.98)';
+                setTimeout(() => {
+                    card.style.transform = 'scale(1)';
+                }, 150);
+            });
+        });
+
+        // Hover effect for cards to add some "creamy" movement
+        document.querySelectorAll('.group').forEach(el => {
+            el.addEventListener('mouseenter', () => {
+                el.style.animation = 'soft-bounce 1.5s infinite ease-in-out';
+            });
+            el.addEventListener('mouseleave', () => {
+                el.style.animation = 'none';
+            });
+        });
+    </script>
+</body></html>
