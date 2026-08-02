@@ -39,8 +39,9 @@ export function BottomNav({ activeItem }: BottomNavProps) {
   const active = activeItem ?? deriveActiveItem(pathname);
 
   return (
+    <>
     <nav
-      className="glass-effect fixed inset-x-0 bottom-0 z-40 flex h-16 items-center justify-around rounded-t-xl px-2 shadow-top md:hidden"
+      className="glass-effect fixed inset-x-0 bottom-0 z-40 flex h-16 items-center justify-around rounded-t-xl px-2 shadow-top lg:hidden"
       aria-label="Navegación inferior"
     >
       {NAV_ITEMS.map((item) => {
@@ -68,5 +69,40 @@ export function BottomNav({ activeItem }: BottomNavProps) {
         );
       })}
     </nav>
+
+      {/* Desktop sidebar rail — visible at lg+. Same items as bottom bar,
+          arranged vertically with the active item highlighted. */}
+      <aside
+        className="glass-effect fixed bottom-0 left-0 top-0 z-40 hidden w-64 flex-col gap-2 border-r border-outline-variant bg-surface/80 px-3 pb-6 pt-20 lg:flex"
+        aria-label="Navegación principal"
+      >
+        <nav className="flex flex-col gap-1">
+          {NAV_ITEMS.map((item) => {
+            const isActive = item.id === active;
+            return (
+              <Link
+                key={item.id}
+                href={item.href}
+                aria-current={isActive ? 'page' : undefined}
+                className={cn(
+                  'flex items-center gap-3 rounded-full px-4 py-3 text-body-md transition duration-200',
+                  isActive
+                    ? 'bg-secondary-container font-semibold text-on-secondary-container'
+                    : 'font-medium text-on-surface-variant hover:bg-surface-container-high',
+                )}
+              >
+                <Icon
+                  name={item.icon}
+                  size={1.4}
+                  fill={isActive ? 1 : 0}
+                  weight={isActive ? 600 : 400}
+                />
+                {item.label}
+              </Link>
+            );
+          })}
+        </nav>
+      </aside>
+    </>
   );
 }

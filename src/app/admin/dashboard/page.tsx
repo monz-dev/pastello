@@ -33,7 +33,7 @@ export default async function AdminDashboardPage() {
               Pedidos hoy
             </span>
           </div>
-          <span className="text-display-md-mobile font-bold text-on-surface md:text-display-md-desktop">
+          <span className="text-display-md-mobile font-bold text-on-surface">
             {ordersToday}
           </span>
         </article>
@@ -45,7 +45,7 @@ export default async function AdminDashboardPage() {
               Ingresos hoy
             </span>
           </div>
-          <span className="text-display-md-mobile font-bold text-secondary md:text-display-md-desktop">
+          <span className="text-display-md-mobile font-bold text-secondary">
             ${revenueToday.toFixed(2)}
           </span>
         </article>

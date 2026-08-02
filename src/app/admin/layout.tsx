@@ -14,7 +14,7 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
   return (
     <div className="bg-surface min-h-screen">
       <AdminSidebar />
-      <main className="px-container-padding-mobile md:ml-64 md:px-container-padding-desktop pt-20 pb-16">
+      <main className="px-container-padding-mobile md:ml-64 md:px-container-padding-tablet lg:px-container-padding-desktop pt-20 pb-16">
         {children}
       </main>
     </div>

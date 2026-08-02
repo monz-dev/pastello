@@ -67,7 +67,7 @@ export function Card({
             <img
               src={imageUrl}
               alt={imageAlt || title || ''}
-              className="h-full w-full object-cover"
+              className="h-full w-full max-w-full object-cover"
               loading="lazy"
             />
           )}

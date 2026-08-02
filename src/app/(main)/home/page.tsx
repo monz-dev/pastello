@@ -13,11 +13,11 @@ function CakeCarouselSkeleton() {
   return (
     <div className="flex flex-col gap-4">
       <div className="h-12 w-full animate-pulse rounded-full bg-surface-container-low" />
-      <div className="flex gap-6 overflow-hidden pb-4">
+      <div className="flex gap-6 overflow-hidden pb-4 lg:grid lg:grid-cols-3 lg:overflow-visible lg:pb-0">
         {[0, 1, 2].map((i) => (
           <div
             key={i}
-            className="min-w-[280px] flex-shrink-0 md:min-w-[340px]"
+            className="w-[85vw] max-w-[400px] flex-shrink-0 sm:w-[45vw] sm:max-w-[360px] md:w-[380px] md:max-w-[380px] lg:w-auto lg:max-w-none lg:flex-shrink"
           >
             <div className="aspect-square w-full animate-pulse rounded-lg bg-surface-container-low" />
             <div className="mt-3 h-4 w-2/3 animate-pulse rounded bg-surface-container-low" />
