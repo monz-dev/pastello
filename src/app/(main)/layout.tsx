@@ -34,7 +34,7 @@ export default function MainLayout({
   return (
     <>
       <TopNav />
-      <main className="px-container-padding-mobile md:px-container-padding-desktop pt-20 pb-32">
+      <main className="px-container-padding-mobile md:px-container-padding-tablet lg:ml-64 lg:px-container-padding-desktop pt-20 pb-32 lg:pb-16">
         {children}
       </main>
       <BottomNav activeItem={activeItem} />

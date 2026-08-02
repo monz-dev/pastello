@@ -58,14 +58,14 @@ export function CakeCarousel({
       ) : (
         <div
           data-testid="cake-scroll"
-          className="flex snap-x snap-mandatory gap-6 overflow-x-auto pb-4"
+          className="flex snap-x snap-mandatory gap-6 overflow-x-auto pb-4 lg:grid lg:grid-cols-3 lg:overflow-visible lg:pb-0"
           role="region"
           aria-label="Catálogo de pasteles"
         >
           {filtered.map((cake) => (
             <div
               key={cake.id}
-              className="min-w-[260px] flex-shrink-0 snap-start sm:min-w-[280px] md:min-w-[340px]"
+              className="w-[85vw] max-w-[400px] flex-shrink-0 snap-start sm:w-[45vw] sm:max-w-[360px] md:w-[380px] md:max-w-[380px] lg:w-auto lg:max-w-none lg:flex-shrink"
             >
               <Card
                 variant="product"

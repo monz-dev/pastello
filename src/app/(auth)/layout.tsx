@@ -6,7 +6,7 @@ import type { ReactNode } from 'react';
  */
 export default function AuthLayout({ children }: { children: ReactNode }) {
   return (
-    <div className="bg-surface px-container-padding-mobile md:px-container-padding-desktop flex min-h-screen flex-col items-center justify-center gap-6 md:gap-8 py-8 md:py-16">
+    <div className="bg-surface px-container-padding-mobile md:px-container-padding-tablet lg:px-container-padding-desktop flex min-h-screen flex-col items-center justify-center gap-6 md:gap-8 lg:gap-10 py-8 md:py-16">
       {children}
     </div>
   );

@@ -91,7 +91,7 @@ export default async function OrdersPage() {
           {orders.map((order) => (
             <li
               key={order.id}
-              className="flex items-center justify-between gap-4 rounded-2xl bg-surface-light p-4 shadow-card"
+              className="flex flex-wrap items-center justify-between gap-3 rounded-2xl bg-surface-light p-4 shadow-card lg:grid lg:grid-cols-[1fr_auto_auto_auto] lg:items-center lg:gap-6 lg:p-5"
             >
               <div className="flex flex-col gap-1">
                 <span className="text-body-md font-semibold capitalize text-on-surface">

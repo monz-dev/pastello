@@ -105,6 +105,7 @@
   --spacing-base-unit: 4px;
   --spacing-container-padding-mobile: 20px;
   --spacing-container-padding-desktop: 40px;
+  --spacing-container-padding-tablet: 32px;
   --spacing-gutter: 16px;
   --spacing-stack-sm: 8px;
   --spacing-stack-md: 16px;
@@ -153,6 +154,21 @@
   @variant md {
     font-size: 40px;
     line-height: 48px;
+  }
+}
+
+@utility text-display-md-mobile {
+  font-size: 28px;
+  line-height: 36px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  @variant md {
+    font-size: 32px;
+    line-height: 40px;
+  }
+  @variant lg {
+    font-size: 36px;
+    line-height: 44px;
   }
 }
 

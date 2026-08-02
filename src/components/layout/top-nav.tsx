@@ -58,7 +58,7 @@ export function TopNav({ title, onMenuClick, onCartClick }: TopNavProps) {
         hidden ? '-translate-y-full' : 'translate-y-0',
       )}
     >
-      <div className="flex h-full items-center justify-between px-container-padding-mobile">
+      <div className="flex h-full items-center justify-between px-container-padding-mobile md:px-container-padding-tablet lg:px-container-padding-desktop">
         <button
           type="button"
           onClick={onMenuClick}
