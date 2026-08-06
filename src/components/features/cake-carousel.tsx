@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Card } from '@/components/ui/card';
 import { SearchBar } from '@/components/features/search-bar';
 import { cn } from '@/lib/utils/cn';
@@ -12,6 +12,8 @@ interface CakeCarouselProps {
   onFavorite?: (cakeId: string) => void;
   className?: string;
 }
+
+const AUTOPLAY_INTERVAL_MS = 5_000;
 
 /**
  * CakeCarousel — client island that owns the search query and renders the
@@ -29,12 +31,115 @@ export function CakeCarousel({
   className,
 }: CakeCarouselProps) {
   const [query, setQuery] = useState('');
+  const [isPaused, setIsPaused] = useState(false);
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const currentIndexRef = useRef(0);
+  const initialQueryRef = useRef(true);
 
   const trimmed = query.trim().toLowerCase();
   const filtered =
     trimmed.length === 0
       ? cakes
       : cakes.filter((cake) => cake.name.toLowerCase().includes(trimmed));
+
+  useEffect(() => {
+    if (initialQueryRef.current) {
+      initialQueryRef.current = false;
+      return;
+    }
+
+    currentIndexRef.current = 0;
+    scrollRef.current?.scrollTo?.({ left: 0, behavior: 'auto' });
+  }, [trimmed]);
+
+  useEffect(() => {
+    const scrollContainer = scrollRef.current;
+    if (!scrollContainer || filtered.length < 2) return;
+
+    const reducedMotionQuery = window.matchMedia?.(
+      '(prefers-reduced-motion: reduce)',
+    );
+    let timer: ReturnType<typeof setInterval> | undefined;
+
+    const advance = () => {
+      if (scrollContainer.scrollWidth <= scrollContainer.clientWidth) {
+        if (timer !== undefined) {
+          clearInterval(timer);
+          timer = undefined;
+        }
+        return;
+      }
+
+      currentIndexRef.current =
+        (currentIndexRef.current + 1) % filtered.length;
+      const nextCard = scrollContainer.children[currentIndexRef.current];
+      const nextLeft =
+        currentIndexRef.current === 0
+          ? 0
+          : (nextCard as HTMLElement).offsetLeft;
+
+      scrollContainer.scrollTo({ left: nextLeft, behavior: 'smooth' });
+    };
+
+    const updateTimer = () => {
+      const canAutoplay =
+        !isPaused &&
+        !reducedMotionQuery?.matches &&
+        scrollContainer.scrollWidth > scrollContainer.clientWidth;
+
+      if (!canAutoplay) {
+        if (timer !== undefined) {
+          clearInterval(timer);
+          timer = undefined;
+        }
+        return;
+      }
+
+      if (timer !== undefined) return;
+      timer = setInterval(advance, AUTOPLAY_INTERVAL_MS);
+    };
+
+    const handleScroll = () => {
+      const cards = Array.from(scrollContainer.children) as HTMLElement[];
+      if (cards.length === 0) return;
+
+      const scrollLeft = scrollContainer.scrollLeft;
+      currentIndexRef.current = cards.reduce(
+        (closestIndex, card, index) => {
+          const closestDistance = Math.abs(
+            cards[closestIndex].offsetLeft - scrollLeft,
+          );
+          const distance = Math.abs(card.offsetLeft - scrollLeft);
+          return distance < closestDistance ? index : closestIndex;
+        },
+        0,
+      );
+    };
+
+    const handleReducedMotionChange = () => updateTimer();
+    const resizeObserver =
+      typeof ResizeObserver === 'undefined'
+        ? undefined
+        : new ResizeObserver(updateTimer);
+
+    updateTimer();
+    scrollContainer.addEventListener('scroll', handleScroll, { passive: true });
+    resizeObserver?.observe(scrollContainer);
+    window.addEventListener('resize', updateTimer);
+
+    reducedMotionQuery?.addEventListener('change', handleReducedMotionChange);
+
+    return () => {
+      if (timer !== undefined) clearInterval(timer);
+      scrollContainer.removeEventListener('scroll', handleScroll);
+      resizeObserver?.disconnect();
+      window.removeEventListener('resize', updateTimer);
+      reducedMotionQuery?.removeEventListener(
+        'change',
+        handleReducedMotionChange,
+      );
+    };
+  }, [filtered.length, isPaused]);
 
   return (
     <div className={cn('flex flex-col gap-4', className)}>
@@ -58,9 +163,18 @@ export function CakeCarousel({
       ) : (
         <div
           data-testid="cake-scroll"
+          ref={scrollRef}
           className="flex snap-x snap-mandatory gap-6 overflow-x-auto pb-4 lg:grid lg:grid-cols-3 lg:overflow-visible lg:pb-0"
           role="region"
           aria-label="Catálogo de pasteles"
+          onMouseEnter={() => setIsPaused(true)}
+          onMouseLeave={() => setIsPaused(false)}
+          onFocus={() => setIsPaused(true)}
+          onBlur={(event) => {
+            if (!event.currentTarget.contains(event.relatedTarget as Node | null)) {
+              setIsPaused(false);
+            }
+          }}
         >
           {filtered.map((cake) => (
             <div
