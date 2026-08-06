@@ -68,7 +68,7 @@ export default async function OrdersPage() {
         <div className="flex flex-col items-center justify-center gap-3 rounded-2xl border border-outline-variant bg-surface-light/60 px-4 py-16 text-center">
           <Icon name="shopping_bag" size={2.5} weight={400} className="text-on-surface-variant" />
           <p className="text-body-md text-on-surface-variant">
-            Aún no tenés pedidos.
+            Aún no tienes pedidos.
           </p>
           {user ? (
             <Link

@@ -12,7 +12,7 @@ import { useAuth } from '@/hooks/use-auth';
 const PASSWORD_MIN_LENGTH = 6;
 
 const VALIDATION = {
-  EMAIL_INVALID: 'Ingresá un email válido.',
+  EMAIL_INVALID: 'Ingresa un correo electrónico válido.',
   PASSWORD_TOO_SHORT: 'La contraseña debe tener al menos 6 caracteres.',
   PASSWORD_MISMATCH: 'Las contraseñas no coinciden.',
 } as const;
@@ -120,9 +120,9 @@ export default function SignupPage() {
   return (
     <div className="flex w-full max-w-sm flex-col items-stretch gap-6">
       <header className="flex flex-col items-center gap-1 text-center">
-        <h1 className="text-headline-md font-bold text-secondary">Creá tu cuenta</h1>
+        <h1 className="text-headline-md font-bold text-secondary">Crea tu cuenta</h1>
         <p className="text-body-md text-on-surface-variant">
-          Empezá a diseñar tu pastel ideal
+          Empieza a diseñar tu pastel ideal
         </p>
       </header>
 
@@ -200,7 +200,7 @@ export default function SignupPage() {
       )}
 
       <p className="text-center text-body-sm text-on-surface-variant">
-        ¿Ya tenés cuenta?{' '}
+        ¿Ya tienes una cuenta?{' '}
         <Link
           href="/login"
           className="font-semibold text-primary underline underline-offset-2 hover:text-primary-fixed-dim"

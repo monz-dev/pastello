@@ -143,7 +143,7 @@ export default function LoginPage() {
       )}
 
       <p className="text-center text-body-sm text-on-surface-variant">
-        ¿No tenés cuenta?{' '}
+        ¿No tienes una cuenta?{' '}
         <Link
           href="/signup"
           className="font-semibold text-primary underline underline-offset-2 hover:text-primary-fixed-dim"

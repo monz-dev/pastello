@@ -108,7 +108,7 @@ export default async function ProfilePage() {
             person_off
           </span>
           <p className="text-body-md text-on-surface-variant">
-            No encontramos tu perfil. Contactá a soporte si creés que es un error.
+            No encontramos tu perfil. Contacta con soporte si crees que es un error.
           </p>
         </div>
       )}

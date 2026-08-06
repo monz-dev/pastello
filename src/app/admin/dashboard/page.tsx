@@ -72,7 +72,7 @@ export default async function AdminDashboardPage() {
         <div className="flex flex-col items-center justify-center gap-2 rounded-2xl border border-outline-variant bg-surface-light/60 px-4 py-16 text-center">
           <Icon name="event_busy" size={2} weight={400} className="text-on-surface-variant" />
           <p className="text-body-md text-on-surface-variant">
-            Sin datos aún. Cuando lleguen pedidos hoy, las métricas aparecerán acá.
+            Sin datos aún. Cuando lleguen pedidos hoy, las métricas aparecerán aquí.
           </p>
         </div>
       )}

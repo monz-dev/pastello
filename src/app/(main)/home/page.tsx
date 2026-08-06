@@ -61,7 +61,7 @@ export default async function HomePage() {
       <div className="flex flex-col gap-2">
         <h1 className="text-headline-md text-on-surface">Inicio</h1>
         <p className="text-body-md text-on-surface-variant">
-          Explorá nuestros pasteles pre-diseñados o creá el tuyo personalizado.
+          Explora nuestros pasteles prediseñados o crea el tuyo personalizado.
         </p>
       </div>
 
@@ -92,7 +92,7 @@ export default async function HomePage() {
           ¿Tienes una idea?
         </h2>
         <p className="text-body-md text-on-primary-container/80">
-          Diseñá tu pastel paso a paso: tamaño, pan, relleno y cobertura.
+          Diseña tu pastel paso a paso: tamaño, pan, relleno y cobertura.
           Cuando estés listo, lo enviamos directamente a la pastelería.
         </p>
         <Link href="/create" className={CTA_PRIMARY}>

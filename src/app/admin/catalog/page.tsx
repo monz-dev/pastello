@@ -24,7 +24,7 @@ export default function AdminCatalogPage() {
             Disponible en Slice B
           </span>
           <span className="text-body-md text-on-surface-variant">
-            Acá vas a poder crear, editar y desactivar pasteles del catálogo.
+            Aquí podrás crear, editar y desactivar pasteles del catálogo.
           </span>
         </div>
       </div>
