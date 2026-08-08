@@ -1,4 +1,5 @@
 export const INGREDIENT_TYPE = {
+  TAMANO: 'tamaño',
   PAN: 'pan',
   RELLENO: 'relleno',
   COBERTURA: 'cobertura',
