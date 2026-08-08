@@ -14,13 +14,13 @@ const SINGLE_TIER: Record<Exclude<CakeIconSize, 'doble-piso'>, string> = {
 
 function SingleTier({
   tierClass,
-  frostingClass = 'absolute top-0 left-0 right-0 h-1.5 rounded-t-md bg-secondary-container',
+  frostingClass = 'absolute top-0 left-0 right-0 h-1.5 rounded-t-md bg-secondary',
 }: {
   tierClass: string;
   frostingClass?: string;
 }) {
   return (
-    <div className={`relative ${tierClass} rounded-md bg-primary`}>
+    <div className={`relative ${tierClass} rounded-t-md bg-secondary`}>
       <div className={frostingClass} />
     </div>
   );
@@ -30,7 +30,7 @@ export function CakeSizeIcon({ size, cmLabel }: CakeSizeIconProps) {
   if (size === 'doble-piso') {
     return (
       <div className="flex flex-col items-center gap-2">
-        <div className="flex flex-col items-center gap-1">
+        <div className="flex flex-col items-center gap-0">
           <SingleTier tierClass="w-14 h-10" />
           <SingleTier tierClass="w-14 h-10" />
         </div>
