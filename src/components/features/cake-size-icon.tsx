@@ -20,7 +20,7 @@ function SingleTier({
   frostingClass?: string;
 }) {
   return (
-    <div className={`relative ${tierClass} rounded-md bg-secondary`}>
+    <div className={`relative ${tierClass} rounded-md bg-primary`}>
       <div className={frostingClass} />
     </div>
   );

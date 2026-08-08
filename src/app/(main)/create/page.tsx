@@ -44,6 +44,13 @@ function getSizeMeta(name: string): { icon: 'mini' | 'mediano' | 'doble-piso' | 
   return { icon: 'mediano', cm: '14 cm' };
 }
 
+/** Strips the leading "Xcm — " prefix from descriptions since the cm
+ *  measurement already appears below the cake icon. */
+function cleanDescription(desc: string | null): string | null {
+  if (!desc) return null;
+  return desc.replace(/^\d+\s*cm(\s*\+\s*\d+\s*cm)?\s*[—–-]\s*/, '').trim() || null;
+}
+
 export default function CreatePage() {
   const supabase = createClient();
   const { currentStep, next, prev, isFirstStep, isLastStep } = useStepper(
@@ -91,7 +98,7 @@ export default function CreatePage() {
       {currentStep === 0 && (
         <div className="flex flex-col gap-4">
           <h2 className="text-headline-sm text-on-surface">
-            Elegí el tamaño de tu pastel
+            Elige el tamaño de tu pastel
           </h2>
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {sizes.map((size) => {
@@ -106,7 +113,9 @@ export default function CreatePage() {
                   <div className="flex flex-col items-center gap-2 py-4">
                     <CakeSizeIcon size={meta.icon} cmLabel={meta.cm} />
                     <h3 className="text-headline-sm text-on-surface text-center">{size.name}</h3>
-                    <p className="text-body-sm text-on-surface-variant text-center">{size.description}</p>
+                    <p className="text-body-sm text-on-surface-variant text-center">
+                      {cleanDescription(size.description) ?? size.description}
+                    </p>
                   </div>
                 </Card>
               );
