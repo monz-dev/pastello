@@ -12,11 +12,23 @@ ALTER TABLE public.ingredients DROP CONSTRAINT IF EXISTS ingredients_type_check;
 ALTER TABLE public.ingredients ADD CONSTRAINT ingredients_type_check
   CHECK (type IN ('tamaño', 'pan', 'relleno', 'cobertura'));
 
--- Admin SELECT: allow admins to see ALL ingredients (active and inactive)
-CREATE POLICY "ingredients_select_admin" ON public.ingredients
-  FOR SELECT USING (
-    auth.uid() IN (SELECT id FROM public.profiles WHERE role = 'admin')
+-- Admin SELECT: allow admins to see ALL ingredients (active and inactive).
+-- Uses a SECURITY DEFINER function to avoid infinite recursion caused by
+-- profiles RLS referencing itself (see profiles_select_owner_or_admin).
+CREATE OR REPLACE FUNCTION public.is_admin()
+RETURNS boolean
+LANGUAGE sql
+STABLE
+SECURITY DEFINER
+AS $$
+  SELECT EXISTS (
+    SELECT 1 FROM public.profiles
+    WHERE id = auth.uid() AND role = 'admin'
   );
+$$;
+
+CREATE POLICY "ingredients_select_admin" ON public.ingredients
+  FOR SELECT USING (public.is_admin());
 
 -- Seed 5 cake sizes
 INSERT INTO public.ingredients (type, name, description, image_url, additional_price, sort_order) VALUES
