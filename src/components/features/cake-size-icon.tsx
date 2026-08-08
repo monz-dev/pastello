@@ -31,8 +31,8 @@ export function CakeSizeIcon({ size, cmLabel }: CakeSizeIconProps) {
     return (
       <div className="flex flex-col items-center gap-2">
         <div className="flex flex-col items-center gap-1">
-          <SingleTier tierClass="w-12 h-8" />
-          <SingleTier tierClass="w-18 h-10" />
+          <SingleTier tierClass="w-14 h-10" />
+          <SingleTier tierClass="w-14 h-10" />
         </div>
         <span className="text-label-md text-on-surface-variant">{cmLabel}</span>
       </div>
