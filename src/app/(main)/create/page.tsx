@@ -5,6 +5,7 @@ import { Stepper } from '@/components/ui/stepper';
 import { useStepper } from '@/hooks/use-stepper';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
+import { CakeSizeIcon } from '@/components/features/cake-size-icon';
 import { createClient } from '@/lib/supabase/client';
 
 const STEPS = [
@@ -32,6 +33,16 @@ const FALLBACK_SIZES: SizeOption[] = [
   { id: 'fallback-grande', name: 'Grande', description: '20cm — Ideal para 15-20 personas', additional_price: 200 },
   { id: 'fallback-extra-grande', name: 'Extra grande', description: '24cm — Ideal para 25-30 personas', additional_price: 280 },
 ];
+
+function getSizeMeta(name: string): { icon: 'mini' | 'mediano' | 'doble-piso' | 'grande' | 'extra-grande'; cm: string } {
+  const n = name.toLowerCase().trim();
+  if (n.includes('mini')) return { icon: 'mini', cm: '7 cm' };
+  if (n.includes('doble') || n.includes('doble piso')) return { icon: 'doble-piso', cm: '14 cm + 14 cm' };
+  if (n.includes('extra')) return { icon: 'extra-grande', cm: '24 cm' };
+  if (n.includes('grande')) return { icon: 'grande', cm: '20 cm' };
+  if (n.includes('mediano') || n.includes('mediana')) return { icon: 'mediano', cm: '14 cm' };
+  return { icon: 'mediano', cm: '14 cm' };
+}
 
 export default function CreatePage() {
   const supabase = createClient();
@@ -83,17 +94,23 @@ export default function CreatePage() {
             Elegí el tamaño de tu pastel
           </h2>
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {sizes.map((size) => (
-              <Card
-                key={size.id}
-                variant="selection"
-                title={size.name}
-                description={size.description ?? undefined}
-                price={size.additional_price ?? 0}
-                selected={selectedSizeId === size.id}
-                onSelect={() => setSelectedSizeId(size.id)}
-              />
-            ))}
+            {sizes.map((size) => {
+              const meta = getSizeMeta(size.name);
+              return (
+                <Card
+                  key={size.id}
+                  variant="selection"
+                  selected={selectedSizeId === size.id}
+                  onSelect={() => setSelectedSizeId(size.id)}
+                >
+                  <div className="flex flex-col items-center gap-2 py-4">
+                    <CakeSizeIcon size={meta.icon} cmLabel={meta.cm} />
+                    <h3 className="text-headline-sm text-on-surface text-center">{size.name}</h3>
+                    <p className="text-body-sm text-on-surface-variant text-center">{size.description}</p>
+                  </div>
+                </Card>
+              );
+            })}
           </div>
         </div>
       )}
