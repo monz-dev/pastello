@@ -22,6 +22,17 @@ type SizeOption = {
   additional_price: number | null;
 };
 
+/** Fallback sizes shown when Supabase is unreachable or the migration hasn't
+ *  been applied yet. IDs are stable so `selectedSizeId` comparisons still work.
+ *  Once the remote `ingredients` table has `tamaño` rows, those take over. */
+const FALLBACK_SIZES: SizeOption[] = [
+  { id: 'fallback-mini', name: 'Mini', description: '7cm — Ideal para 2-4 personas', additional_price: 0 },
+  { id: 'fallback-mediano', name: 'Mediano', description: '14cm — Ideal para 6-8 personas', additional_price: 80 },
+  { id: 'fallback-doble-piso', name: 'Doble piso', description: '14cm + 14cm — Dos niveles, ideal para 12-15 personas', additional_price: 150 },
+  { id: 'fallback-grande', name: 'Grande', description: '20cm — Ideal para 15-20 personas', additional_price: 200 },
+  { id: 'fallback-extra-grande', name: 'Extra grande', description: '24cm — Ideal para 25-30 personas', additional_price: 280 },
+];
+
 export default function CreatePage() {
   const supabase = createClient();
   const { currentStep, next, prev, isFirstStep, isLastStep } = useStepper(
@@ -34,16 +45,22 @@ export default function CreatePage() {
   const selectedSize = sizes.find((s) => s.id === selectedSizeId) ?? null;
 
   const fetchSizes = useCallback(async () => {
-    const { data, error } = await supabase
-      .from('ingredients')
-      .select('id, name, description, additional_price')
-      .eq('type', 'tamaño')
-      .eq('is_active', true)
-      .order('sort_order', { ascending: true });
+    try {
+      const { data, error } = await supabase
+        .from('ingredients')
+        .select('id, name, description, additional_price')
+        .eq('type', 'tamaño')
+        .eq('is_active', true)
+        .order('sort_order', { ascending: true });
 
-    if (!error && data) {
-      setSizes(data as SizeOption[]);
+      if (!error && data && data.length > 0) {
+        setSizes(data as SizeOption[]);
+        return;
+      }
+    } catch {
+      // Supabase unreachable — fall through to fallback
     }
+    setSizes(FALLBACK_SIZES);
   }, [supabase]);
 
   useEffect(() => {
