@@ -189,7 +189,6 @@ export default function CreatePage() {
   ].reduce((acc, price) => acc + price, 0);
 
   // Scroll behavior on step change
-  const stepContentRef = useRef<HTMLDivElement>(null);
   const prevStepRef = useRef(currentStep);
 
   useEffect(() => {
@@ -202,7 +201,7 @@ export default function CreatePage() {
     // Wait for the DOM to reflect the new step before scrolling
     requestAnimationFrame(() => {
       if (direction === 'next') {
-        stepContentRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        window.scrollTo({ top: 0, behavior: 'smooth' });
       } else {
         // Scroll to the previously-selected card (aria-pressed="true")
         const selectedCard = document.querySelector<HTMLElement>('[aria-pressed="true"]');
@@ -392,9 +391,7 @@ export default function CreatePage() {
         Paso {currentStep + 1}: {STEPS[currentStep].label}
       </p>
 
-      <div ref={stepContentRef}>
-        {renderStep()}
-      </div>
+      {renderStep()}
 
       {/* Sticky action footer — glassmorphism with running subtotal and nav */}
       <div className="glass-effect fixed inset-x-0 bottom-0 z-30 flex h-16 items-center justify-between border-t border-outline-variant bg-surface/90 px-4 lg:px-8">
