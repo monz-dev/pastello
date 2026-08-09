@@ -1,16 +1,22 @@
--- Migration 00014: update ingredient images to Supabase Storage + remove deprecated items
+-- Migration 00014: update ingredient images to Supabase Storage + remove deprecated items + fix prices
 -- Author: Pastello (create-flow slice)
 -- Description: Switches ingredient image_url from Unsplash to Supabase Storage,
---   removes Mantequilla (pan) and Oreo (cobertura) per updated catalog.
+--   removes Mantequilla (pan) and Oreo (cobertura), updates size prices.
 
 -- ==========================================================================
--- 1. Remove deprecated ingredients
+-- 1. Update size prices
+-- ==========================================================================
+UPDATE public.ingredients SET additional_price = 40  WHERE type = 'tamaño' AND name = 'Mini';
+UPDATE public.ingredients SET additional_price = 250 WHERE type = 'tamaño' AND name = 'Extra grande';
+
+-- ==========================================================================
+-- 2. Remove deprecated ingredients
 -- ==========================================================================
 DELETE FROM public.ingredients WHERE type = 'pan' AND name = 'Mantequilla';
 DELETE FROM public.ingredients WHERE type = 'cobertura' AND name = 'Oreo';
 
 -- ==========================================================================
--- 2. Update image URLs → Supabase Storage
+-- 3. Update image URLs → Supabase Storage
 --    Bucket: ingredients (public)
 --    URL base: https://vycvymdbqwmpivfnqqlg.supabase.co/storage/v1/object/public/ingredients
 -- ==========================================================================

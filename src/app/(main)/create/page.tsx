@@ -37,11 +37,11 @@ type SelectedOption = Pick<
 > & { image_url?: string };
 
 const FALLBACK_SIZES: SizeOption[] = [
-  { id: 'fallback-mini', name: 'Mini', description: '7cm — Ideal para 2-4 personas', additional_price: 0 },
+  { id: 'fallback-mini', name: 'Mini', description: '7cm — Ideal para 2-4 personas', additional_price: 40 },
   { id: 'fallback-mediano', name: 'Mediano', description: '14cm — Ideal para 6-8 personas', additional_price: 80 },
   { id: 'fallback-doble-piso', name: 'Doble piso', description: '14cm + 14cm — Dos niveles, ideal para 12-15 personas', additional_price: 150 },
   { id: 'fallback-grande', name: 'Grande', description: '20cm — Ideal para 15-20 personas', additional_price: 200 },
-  { id: 'fallback-extra-grande', name: 'Extra grande', description: '24cm — Ideal para 25-30 personas', additional_price: 280 },
+  { id: 'fallback-extra-grande', name: 'Extra grande', description: '24cm — Ideal para 25-30 personas', additional_price: 250 },
 ];
 
 const PAN_FALLBACK: IngredientOption[] = [
@@ -202,6 +202,9 @@ export default function CreatePage() {
                     <p className="text-body-sm text-on-surface-variant text-center">
                       {cleanDescription(size.description) ?? size.description}
                     </p>
+                    <span className="text-headline-sm font-semibold text-secondary">
+                      {formatPrice(size.additional_price)}
+                    </span>
                   </div>
                 </Card>
               );
