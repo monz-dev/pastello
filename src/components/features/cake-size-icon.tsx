@@ -14,13 +14,13 @@ const SINGLE_TIER: Record<Exclude<CakeIconSize, 'doble-piso'>, string> = {
 
 function SingleTier({
   tierClass,
-  frostingClass = 'absolute top-0 left-0 right-0 h-1.5 rounded-t-md bg-secondary',
+  frostingClass = 'absolute top-0 left-0 right-0 h-1.5 rounded-t-md bg-cake',
 }: {
   tierClass: string;
   frostingClass?: string;
 }) {
   return (
-    <div className={`relative ${tierClass} rounded-t-md bg-secondary`}>
+    <div className={`relative ${tierClass} rounded-t-md bg-cake`}>
       <div className={frostingClass} />
     </div>
   );

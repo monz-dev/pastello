@@ -25,6 +25,9 @@
   --color-surface-light: #FFFFFF;
   --color-border-subtle: #EFEFEF;
 
+   /* Colors — Product / Cake */
+  --color-cake: #B83A48;
+
   /* Colors — Primary */
   --color-primary: #805062;
   --color-on-primary: #ffffff;
