@@ -1,10 +1,11 @@
 'use client';
 
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { Stepper } from '@/components/ui/stepper';
 import { useStepper } from '@/hooks/use-stepper';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
+import { Icon } from '@/components/ui/icon';
 import { CakeSizeIcon } from '@/components/features/cake-size-icon';
 import { createClient } from '@/lib/supabase/client';
 
@@ -179,6 +180,37 @@ export default function CreatePage() {
     return selections[currentStep] ?? false;
   }
 
+  // Running subtotal across all selected ingredients
+  const subtotal = [
+    sizes.find((s) => s.id === selectedSizeId)?.additional_price ?? 0,
+    pans.find((p) => p.id === selectedPanId)?.additional_price ?? 0,
+    rellenos.find((r) => r.id === selectedRellenoId)?.additional_price ?? 0,
+    coberturas.find((c) => c.id === selectedCoberturaId)?.additional_price ?? 0,
+  ].reduce((acc, price) => acc + price, 0);
+
+  // Scroll behavior on step change
+  const stepContentRef = useRef<HTMLDivElement>(null);
+  const prevStepRef = useRef(currentStep);
+
+  useEffect(() => {
+    // Skip initial render
+    if (prevStepRef.current === currentStep) return;
+
+    const direction = currentStep > prevStepRef.current ? 'next' : 'prev';
+    prevStepRef.current = currentStep;
+
+    // Wait for the DOM to reflect the new step before scrolling
+    requestAnimationFrame(() => {
+      if (direction === 'next') {
+        stepContentRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      } else {
+        // Scroll to the previously-selected card (aria-pressed="true")
+        const selectedCard = document.querySelector<HTMLElement>('[aria-pressed="true"]');
+        selectedCard?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+    });
+  }, [currentStep]);
+
   function renderStep() {
     if (currentStep === 0) {
       return (
@@ -220,6 +252,9 @@ export default function CreatePage() {
           <h2 className="text-headline-sm text-on-surface">
             Elige el pan
           </h2>
+          <p className="text-body-sm text-on-surface-variant">
+            Todas las opciones están incluidas en el precio base, excepto las marcadas con costo extra.
+          </p>
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {pans.map((pan) => (
               <Card
@@ -228,7 +263,9 @@ export default function CreatePage() {
                 imageUrl={pan.image_url}
                 title={pan.name}
                 description={pan.description ?? undefined}
-                price={pan.additional_price ?? 0}
+                {...(pan.additional_price && pan.additional_price > 0
+                  ? { price: pan.additional_price, pricePrefix: '+' }
+                  : {})}
                 selected={selectedPanId === pan.id}
                 onSelect={() => setSelectedPanId(pan.id)}
               />
@@ -244,6 +281,9 @@ export default function CreatePage() {
           <h2 className="text-headline-sm text-on-surface">
             Elige el relleno
           </h2>
+          <p className="text-body-sm text-on-surface-variant">
+            Todas las opciones están incluidas en el precio base, excepto las marcadas con costo extra.
+          </p>
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {rellenos.map((relleno) => (
               <Card
@@ -252,7 +292,9 @@ export default function CreatePage() {
                 imageUrl={relleno.image_url}
                 title={relleno.name}
                 description={relleno.description ?? undefined}
-                price={relleno.additional_price ?? 0}
+                {...(relleno.additional_price && relleno.additional_price > 0
+                  ? { price: relleno.additional_price, pricePrefix: '+' }
+                  : {})}
                 selected={selectedRellenoId === relleno.id}
                 onSelect={() => setSelectedRellenoId(relleno.id)}
               />
@@ -268,6 +310,9 @@ export default function CreatePage() {
           <h2 className="text-headline-sm text-on-surface">
             Elige la cobertura
           </h2>
+          <p className="text-body-sm text-on-surface-variant">
+            Todas las opciones están incluidas en el precio base, excepto las marcadas con costo extra.
+          </p>
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {coberturas.map((cobertura) => (
               <Card
@@ -276,7 +321,9 @@ export default function CreatePage() {
                 imageUrl={cobertura.image_url}
                 title={cobertura.name}
                 description={cobertura.description ?? undefined}
-                price={cobertura.additional_price ?? 0}
+                {...(cobertura.additional_price && cobertura.additional_price > 0
+                  ? { price: cobertura.additional_price, pricePrefix: '+' }
+                  : {})}
                 selected={selectedCoberturaId === cobertura.id}
                 onSelect={() => setSelectedCoberturaId(cobertura.id)}
               />
@@ -336,7 +383,7 @@ export default function CreatePage() {
   }
 
   return (
-    <div className="flex flex-col gap-8">
+    <div className="flex flex-col gap-8 pb-20">
       <h1 className="text-headline-md text-on-surface">Crear pastel</h1>
 
       <Stepper steps={STEPS} currentStep={currentStep} />
@@ -345,19 +392,42 @@ export default function CreatePage() {
         Paso {currentStep + 1}: {STEPS[currentStep].label}
       </p>
 
-      {renderStep()}
+      <div ref={stepContentRef}>
+        {renderStep()}
+      </div>
 
-      <div className="flex justify-between gap-4">
-        <Button variant="ghost" onClick={prev} disabled={isFirstStep}>
-          Anterior
-        </Button>
-        <Button
-          variant="primary"
-          onClick={next}
-          disabled={getStepDisabled()}
-        >
-          {isLastStep ? 'Finalizar' : 'Siguiente'}
-        </Button>
+      {/* Sticky action footer — glassmorphism with running subtotal and nav */}
+      <div className="glass-effect fixed inset-x-0 bottom-0 z-30 flex h-16 items-center justify-between border-t border-outline-variant bg-surface/90 px-4 lg:px-8">
+        <div className="flex items-baseline gap-2">
+          <span className="text-body-sm text-on-surface-variant">Subtotal</span>
+          <span className="text-headline-sm font-semibold text-secondary">
+            {formatPrice(subtotal)}
+          </span>
+        </div>
+
+        <div className="flex items-center gap-3">
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={prev}
+            disabled={isFirstStep}
+            icon={<Icon name="arrow_back" />}
+          >
+            Anterior
+          </Button>
+          <Button
+            variant="primary"
+            size="sm"
+            onClick={next}
+            disabled={getStepDisabled()}
+            icon={
+              <Icon name={isLastStep ? 'check' : 'arrow_forward'} />
+            }
+            iconPosition="right"
+          >
+            {isLastStep ? 'Finalizar' : 'Siguiente'}
+          </Button>
+        </div>
       </div>
     </div>
   );

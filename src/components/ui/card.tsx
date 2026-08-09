@@ -14,6 +14,8 @@ interface CardProps {
   title?: string;
   description?: string;
   price?: number;
+  /** Override the currency prefix shown before the price. Defaults to "$". */
+  pricePrefix?: string;
   imageUrl?: string;
   imageAlt?: string;
   category?: string;
@@ -42,6 +44,7 @@ export function Card({
   title,
   description,
   price,
+  pricePrefix = '$',
   imageUrl,
   imageAlt = '',
   category,
@@ -95,7 +98,7 @@ export function Card({
           )}
           {price !== undefined && (
             <p className="mt-1 text-headline-sm font-semibold text-secondary">
-              ${price.toFixed(2)}
+              ${pricePrefix}${price.toFixed(2)}
             </p>
           )}
         </div>
@@ -134,7 +137,7 @@ export function Card({
         )}
         {price !== undefined && (
           <p className="mt-1 text-headline-sm font-semibold text-secondary">
-            ${price.toFixed(0)}
+              ${pricePrefix}${price.toFixed(0)}
           </p>
         )}
         {children}

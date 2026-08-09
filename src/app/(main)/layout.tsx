@@ -3,6 +3,7 @@
 import { usePathname } from 'next/navigation';
 import { TopNav } from '@/components/layout/top-nav';
 import { BottomNav } from '@/components/layout/bottom-nav';
+import { cn } from '@/lib/utils/cn';
 
 /**
  * Main layout — wraps the authenticated experience with the fixed TopNav and
@@ -11,6 +12,9 @@ import { BottomNav } from '@/components/layout/bottom-nav';
  *
  * Padding: pt-20 clears the fixed TopNav (h-16), pb-32 clears the fixed
  * BottomNav (h-16) plus breathing room. Container padding switches at md.
+ *
+ * The BottomNav and its accompanying desktop left margin are hidden on the
+ * /create route, where a dedicated sticky action footer takes over.
  */
 const NAV_IDS = ['home', 'create', 'orders', 'profile'] as const;
 
@@ -30,14 +34,20 @@ export default function MainLayout({
 }) {
   const pathname = usePathname();
   const activeItem = getActiveItem(pathname);
+  const isCreatePage = pathname === '/create';
 
   return (
     <>
       <TopNav />
-      <main className="px-container-padding-mobile md:px-container-padding-tablet lg:ml-64 lg:px-container-padding-desktop pt-20 pb-32 lg:pb-16">
+      <main
+        className={cn(
+          'px-container-padding-mobile md:px-container-padding-tablet pt-20',
+          !isCreatePage && 'lg:ml-64 lg:px-container-padding-desktop pb-32 lg:pb-16',
+        )}
+      >
         {children}
       </main>
-      <BottomNav activeItem={activeItem} />
+      {!isCreatePage && <BottomNav activeItem={activeItem} />}
     </>
   );
 }
