@@ -35,7 +35,7 @@ INSERT INTO public.ingredients (type, name, description, image_url, additional_p
   ('tamaño', 'Mini',
     '7cm — Ideal para 2-4 personas',
     '/images/placeholder-size.svg',
-    0, 1),
+    40, 1),
   ('tamaño', 'Mediano',
     '14cm — Ideal para 6-8 personas',
     '/images/placeholder-size.svg',
@@ -51,4 +51,4 @@ INSERT INTO public.ingredients (type, name, description, image_url, additional_p
   ('tamaño', 'Extra grande',
     '24cm — Ideal para 25-30 personas',
     '/images/placeholder-size.svg',
-    280, 5);
+    250, 5);
