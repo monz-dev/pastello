@@ -16,14 +16,38 @@ export const TIME_SLOTS = Array.from({ length: 28 }, (_, index) => {
   return `${hours}:${minutes}`;
 });
 
-/** Returns tomorrow's date as a local YYYY-MM-DD string, avoiding UTC off-by-one errors. */
-export function getTomorrowDate(): string {
-  const tomorrow = new Date();
-  tomorrow.setDate(tomorrow.getDate() + 1);
-  const yyyy = tomorrow.getFullYear();
-  const mm = String(tomorrow.getMonth() + 1).padStart(2, '0');
-  const dd = String(tomorrow.getDate()).padStart(2, '0');
+/** Earliest possible delivery: exactly 24 hours from now. */
+function getMinDateTime(): Date {
+  return new Date(Date.now() + 24 * 60 * 60 * 1000);
+}
+
+/** Returns the minimum delivery date as a local YYYY-MM-DD string. */
+export function getMinDate(): string {
+  const d = getMinDateTime();
+  const yyyy = d.getFullYear();
+  const mm = String(d.getMonth() + 1).padStart(2, '0');
+  const dd = String(d.getDate()).padStart(2, '0');
   return `${yyyy}-${mm}-${dd}`;
+}
+
+/**
+ * Returns the earliest valid time (HH:MM) for a given date.
+ * If the date is the minimum date, returns the 24h-from-now time;
+ * otherwise returns null (any time is valid).
+ */
+export function getMinTimeForDate(dateStr: string): string | null {
+  const minDate = getMinDate();
+  if (dateStr !== minDate) return null;
+
+  const min = getMinDateTime();
+  const hh = String(min.getHours()).padStart(2, '0');
+  const mm = String(min.getMinutes()).padStart(2, '0');
+  return `${hh}:${mm}`;
+}
+
+/** @deprecated Use getMinDate() instead for the 24-hour constraint. */
+export function getTomorrowDate(): string {
+  return getMinDate();
 }
 
 interface DeliveryStepProps {
@@ -33,6 +57,8 @@ interface DeliveryStepProps {
   onDeliveryDateChange: (value: string) => void;
   onDeliveryTimeChange: (value: string) => void;
   onDeliveryTypeChange: (value: DeliveryType) => void;
+  /** Earliest allowed time for the currently selected date (HH:MM), or null if any time is allowed. */
+  minTime?: string | null;
   dateError?: string;
   timeError?: string;
   typeError?: string;
@@ -45,16 +71,20 @@ export function DeliveryStep({
   onDeliveryDateChange,
   onDeliveryTimeChange,
   onDeliveryTypeChange,
+  minTime,
   dateError,
   timeError,
   typeError,
 }: DeliveryStepProps) {
+  const availableSlots = minTime
+    ? TIME_SLOTS.filter((slot) => slot >= minTime)
+    : TIME_SLOTS;
   return (
     <div className="flex flex-col gap-6">
       <div>
         <h2 className="text-headline-sm text-on-surface">¿Cuándo quieres tu pedido?</h2>
         <p className="text-body-sm text-on-surface-variant">
-          Selecciona una fecha y hora a partir de mañana.
+          Puedes agendar tu entrega a partir de 24 horas desde este momento.
         </p>
       </div>
 
@@ -64,7 +94,7 @@ export function DeliveryStep({
           <input
             aria-label="Fecha de entrega"
             type="date"
-            min={getTomorrowDate()}
+            min={getMinDate()}
             value={deliveryDate}
             onChange={(event) => onDeliveryDateChange(event.target.value)}
             className="min-h-12 rounded-md border border-outline-variant bg-beige-soft px-4 text-body-md text-on-surface outline-none focus:border-primary focus:ring-2 focus:ring-primary/30"
@@ -83,7 +113,7 @@ export function DeliveryStep({
             aria-invalid={Boolean(timeError)}
           >
             <option value="">Selecciona una hora</option>
-            {TIME_SLOTS.map((slot) => (
+            {availableSlots.map((slot) => (
               <option key={slot} value={slot}>
                 {slot}
               </option>

@@ -9,7 +9,8 @@ import { Icon } from '@/components/ui/icon';
 import { CakeSizeIcon } from '@/components/features/cake-size-icon';
 import {
   DeliveryStep,
-  getTomorrowDate,
+  getMinDate,
+  getMinTimeForDate,
   TIME_SLOTS,
   type DeliveryType,
 } from '@/components/features/delivery-step';
@@ -202,20 +203,36 @@ export default function CreatePage() {
   }
 
   function isDeliveryScheduleValid(): boolean {
-    return (
-      deliveryDate >= getTomorrowDate() &&
-      TIME_SLOTS.includes(deliveryTime) &&
-      deliveryType !== null
-    );
+    const minDate = getMinDate();
+    if (!deliveryDate || deliveryDate < minDate) return false;
+    if (!TIME_SLOTS.includes(deliveryTime)) return false;
+    if (deliveryType === null) return false;
+
+    // When delivery is on the minimum date, time must be at or after the 24h threshold
+    const minTimeForDate = getMinTimeForDate(deliveryDate);
+    if (minTimeForDate && deliveryTime < minTimeForDate) return false;
+
+    return true;
   }
 
   function validateDeliverySchedule(): boolean {
+    const minDate = getMinDate();
+    const minTimeForDate = getMinTimeForDate(deliveryDate);
+
     const errors = {
       date:
-        deliveryDate < getTomorrowDate() || !deliveryDate
-          ? 'Selecciona una fecha a partir de mañana.'
+        !deliveryDate || deliveryDate < minDate
+          ? `Selecciona una fecha a partir del ${minDate.split('-').reverse().join('/')}.`
           : undefined,
-      time: TIME_SLOTS.includes(deliveryTime) ? undefined : 'Selecciona una hora disponible.',
+      time: (() => {
+        if (!deliveryTime || !TIME_SLOTS.includes(deliveryTime)) {
+          return 'Selecciona una hora disponible.';
+        }
+        if (minTimeForDate && deliveryTime < minTimeForDate) {
+          return `Para esta fecha, la hora mínima es ${minTimeForDate}.`;
+        }
+        return undefined;
+      })(),
       type: deliveryType ? undefined : 'Selecciona cómo recibirás tu pedido.',
     };
     setFieldErrors(errors);
@@ -424,14 +441,17 @@ export default function CreatePage() {
     }
 
     if (currentStep === 5) {
+      const minTime = deliveryDate ? getMinTimeForDate(deliveryDate) : null;
       return (
         <DeliveryStep
           deliveryDate={deliveryDate}
           deliveryTime={deliveryTime}
           deliveryType={deliveryType}
+          minTime={minTime}
           onDeliveryDateChange={(value) => {
             setDeliveryDate(value);
-            setFieldErrors((current) => ({ ...current, date: undefined }));
+            setDeliveryTime('');
+            setFieldErrors((current) => ({ ...current, date: undefined, time: undefined }));
           }}
           onDeliveryTimeChange={(value) => {
             setDeliveryTime(value);
