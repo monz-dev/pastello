@@ -1,12 +1,18 @@
 'use client';
 
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Stepper } from '@/components/ui/stepper';
 import { useStepper } from '@/hooks/use-stepper';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Icon } from '@/components/ui/icon';
 import { CakeSizeIcon } from '@/components/features/cake-size-icon';
+import {
+  DeliveryStep,
+  getTomorrowDate,
+  TIME_SLOTS,
+  type DeliveryType,
+} from '@/components/features/delivery-step';
 import { createClient } from '@/lib/supabase/client';
 
 const STEPS = [
@@ -15,6 +21,7 @@ const STEPS = [
   { label: 'Relleno' },
   { label: 'Cobertura' },
   { label: 'Resumen' },
+  { label: 'Entrega' },
 ];
 
 type SizeOption = {
@@ -104,7 +111,7 @@ function formatPrice(price: number | null): string {
 }
 
 export default function CreatePage() {
-  const supabase = createClient();
+  const supabase = useMemo(() => createClient(), []);
   const { currentStep, next, prev, isFirstStep, isLastStep } = useStepper(
     STEPS.length,
   );
@@ -118,6 +125,17 @@ export default function CreatePage() {
   const [selectedPanId, setSelectedPanId] = useState<string | null>(null);
   const [selectedRellenoId, setSelectedRellenoId] = useState<string | null>(null);
   const [selectedCoberturaId, setSelectedCoberturaId] = useState<string | null>(null);
+  const [deliveryDate, setDeliveryDate] = useState('');
+  const [deliveryTime, setDeliveryTime] = useState('');
+  const [deliveryType, setDeliveryType] = useState<DeliveryType | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
+  const [isSubmitted, setIsSubmitted] = useState(false);
+  const [fieldErrors, setFieldErrors] = useState({
+    date: undefined as string | undefined,
+    time: undefined as string | undefined,
+    type: undefined as string | undefined,
+  });
 
   const allIngredients = useCallback(async () => {
     void (async () => {
@@ -176,8 +194,81 @@ export default function CreatePage() {
       selectedRellenoId === null,
       selectedCoberturaId === null,
     ];
-    if (isLastStep) return true;
+    if (currentStep === 4) return false;
+    if (currentStep === 5) {
+      return !isDeliveryScheduleValid();
+    }
     return selections[currentStep] ?? false;
+  }
+
+  function isDeliveryScheduleValid(): boolean {
+    return (
+      deliveryDate >= getTomorrowDate() &&
+      TIME_SLOTS.includes(deliveryTime) &&
+      deliveryType !== null
+    );
+  }
+
+  function validateDeliverySchedule(): boolean {
+    const errors = {
+      date:
+        deliveryDate < getTomorrowDate() || !deliveryDate
+          ? 'Selecciona una fecha a partir de mañana.'
+          : undefined,
+      time: TIME_SLOTS.includes(deliveryTime) ? undefined : 'Selecciona una hora disponible.',
+      type: deliveryType ? undefined : 'Selecciona cómo recibirás tu pedido.',
+    };
+    setFieldErrors(errors);
+    return !errors.date && !errors.time && !errors.type;
+  }
+
+  async function handleSubmitOrder() {
+    setSubmitError(null);
+    if (!validateDeliverySchedule()) return;
+
+    setIsSubmitting(true);
+    try {
+      const {
+        data: { user },
+        error: userError,
+      } = await supabase.auth.getUser();
+
+      if (userError || !user) {
+        throw new Error('Necesitas iniciar sesión para confirmar tu pedido.');
+      }
+
+      const { error } = await supabase.from('orders').insert({
+        order_type: 'custom_build',
+        user_id: user.id,
+        pan_choice: selectedPanId,
+        relleno_choice: selectedRellenoId,
+        cobertura_choice: selectedCoberturaId,
+        size_choice: sizes.find((size) => size.id === selectedSizeId)?.name ?? null,
+        total_price: subtotal,
+        required_date: deliveryDate,
+        delivery_type: deliveryType,
+        delivery_time: deliveryTime,
+      } as never);
+
+      if (error) throw error;
+
+      setSelectedSizeId(null);
+      setSelectedPanId(null);
+      setSelectedRellenoId(null);
+      setSelectedCoberturaId(null);
+      setDeliveryDate('');
+      setDeliveryTime('');
+      setDeliveryType(null);
+      setIsSubmitted(true);
+    } catch (error) {
+      setSubmitError(
+        error instanceof Error
+          ? error.message
+          : 'No pudimos confirmar tu pedido. Inténtalo de nuevo.',
+      );
+    } finally {
+      setIsSubmitting(false);
+    }
   }
 
   // Running subtotal across all selected ingredients
@@ -332,51 +423,110 @@ export default function CreatePage() {
       );
     }
 
+    if (currentStep === 5) {
+      return (
+        <DeliveryStep
+          deliveryDate={deliveryDate}
+          deliveryTime={deliveryTime}
+          deliveryType={deliveryType}
+          onDeliveryDateChange={(value) => {
+            setDeliveryDate(value);
+            setFieldErrors((current) => ({ ...current, date: undefined }));
+          }}
+          onDeliveryTimeChange={(value) => {
+            setDeliveryTime(value);
+            setFieldErrors((current) => ({ ...current, time: undefined }));
+          }}
+          onDeliveryTypeChange={(value) => {
+            setDeliveryType(value);
+            setFieldErrors((current) => ({ ...current, type: undefined }));
+          }}
+          dateError={fieldErrors.date}
+          timeError={fieldErrors.time}
+          typeError={fieldErrors.type}
+        />
+      );
+    }
+
     // Step 4 — Resumen
     const selectedSize = sizes.find((s) => s.id === selectedSizeId) ?? null;
     const selectedPan = pans.find((p) => p.id === selectedPanId) ?? null;
     const selectedRelleno = rellenos.find((r) => r.id === selectedRellenoId) ?? null;
     const selectedCobertura = coberturas.find((c) => c.id === selectedCoberturaId) ?? null;
 
-    const items: { label: string; name: string; description: string | null; price: number | null; extra?: string }[] = [
-      { label: 'Tamaño', name: selectedSize?.name ?? '—', description: cleanDescription(selectedSize?.description ?? null), price: selectedSize?.additional_price ?? null, extra: selectedSize ? getSizeMeta(selectedSize.name).cm : undefined },
-      { label: 'Pan', name: selectedPan?.name ?? '—', description: selectedPan?.description ?? null, price: selectedPan?.additional_price ?? null },
-      { label: 'Relleno', name: selectedRelleno?.name ?? '—', description: selectedRelleno?.description ?? null, price: selectedRelleno?.additional_price ?? null },
-      { label: 'Cobertura', name: selectedCobertura?.name ?? '—', description: selectedCobertura?.description ?? null, price: selectedCobertura?.additional_price ?? null },
+    const items: { label: string; name: string; description: string | null; price: number | null; icon: string; extra?: string }[] = [
+      { label: 'Tamaño', name: selectedSize?.name ?? '—', description: cleanDescription(selectedSize?.description ?? null), price: selectedSize?.additional_price ?? null, icon: 'straighten', extra: selectedSize ? getSizeMeta(selectedSize.name).cm : undefined },
+      { label: 'Pan', name: selectedPan?.name ?? '—', description: selectedPan?.description ?? null, price: selectedPan?.additional_price ?? null, icon: 'cake' },
+      { label: 'Relleno', name: selectedRelleno?.name ?? '—', description: selectedRelleno?.description ?? null, price: selectedRelleno?.additional_price ?? null, icon: 'layers' },
+      { label: 'Cobertura', name: selectedCobertura?.name ?? '—', description: selectedCobertura?.description ?? null, price: selectedCobertura?.additional_price ?? null, icon: 'brush' },
     ];
 
     const total = items.reduce((acc, item) => acc + (item.price ?? 0), 0);
 
+    // Preview image: preferred cobertura, fallback to pan
+    const previewImage = selectedCobertura?.image_url || selectedPan?.image_url || null;
+
     return (
-      <div className="flex flex-col gap-4">
-        <h2 className="text-headline-sm text-on-surface">
-          Resumen de tu pastel
-        </h2>
-        <Card variant="default" className="flex flex-col gap-4 p-6">
-          {items.map((item) => (
-            <div key={item.label} className="flex items-start justify-between gap-4 border-b border-outline-variant pb-3 last:border-b-0 last:pb-0">
-              <div className="flex flex-col gap-1">
-                <span className="text-label-md uppercase tracking-wide text-on-surface-variant">{item.label}</span>
-                <span className="text-headline-sm text-on-surface">{item.name}</span>
-                {item.description && (
-                  <span className="text-body-sm text-on-surface-variant">{item.description}</span>
-                )}
-                {item.extra && (
-                  <span className="text-body-sm text-on-surface-variant">{item.extra}</span>
-                )}
-              </div>
-              <span className="text-headline-sm font-semibold text-secondary whitespace-nowrap">
-                {formatPrice(item.price)}
-              </span>
-            </div>
-          ))}
-          <div className="flex items-center justify-between border-t border-outline pt-3">
-            <span className="text-headline-sm text-on-surface">Total</span>
+      <div className="flex flex-col gap-6">
+        {/* Section Title */}
+        <div>
+          <h2 className="text-headline-md text-on-surface mb-1">¡Casi listo!</h2>
+          <p className="text-body-md text-on-surface-variant">Revisa los detalles de tu creación antes de finalizar.</p>
+        </div>
+
+        {/* Product Preview Canvas */}
+        <section className="relative aspect-square rounded-3xl overflow-hidden bg-cream flex items-center justify-center shadow-sm">
+          <div className="absolute inset-0 pointer-events-none bg-[radial-gradient(circle_at_center,_rgba(248,187,208,0.15),_transparent)]" />
+          <div className="relative z-10 animate-float w-full h-full p-8 flex items-center justify-center">
+            {previewImage ? (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img
+                className="max-w-full h-auto object-contain drop-shadow-2xl"
+                src={previewImage}
+                alt={selectedCobertura?.name ?? selectedPan?.name ?? 'Pastel'}
+              />
+            ) : (
+              <Icon name="cake" size={6} className="text-primary/20" />
+            )}
+          </div>
+          <div className="absolute bottom-4 right-4 bg-surface/90 backdrop-blur px-4 py-2 rounded-full shadow-sm border border-border-subtle">
             <span className="text-headline-sm font-semibold text-secondary">
               {formatPrice(total)}
             </span>
           </div>
-        </Card>
+        </section>
+
+        {/* Summary Selection List */}
+        <section className="space-y-4">
+          <h3 className="text-label-md uppercase tracking-widest text-outline">Detalles de tu Pastel</h3>
+          {items.map((item) => (
+            <div
+              key={item.label}
+              className="glass-effect rounded-2xl p-4 flex items-center justify-between border border-white/50 shadow-sm bg-surface/70 hover:translate-x-1 transition-transform duration-300"
+            >
+              <div className="flex items-center gap-4">
+                <div className="w-12 h-12 rounded-xl bg-primary-container/30 flex items-center justify-center text-primary shrink-0">
+                  <Icon name={item.icon} size={1.5} />
+                </div>
+                <div className="min-w-0">
+                  <p className="text-body-sm text-on-surface-variant">{item.label}</p>
+                  <p className="text-headline-sm text-on-surface">{item.name}</p>
+                  {item.description && (
+                    <p className="text-body-sm text-on-surface-variant">{item.description}</p>
+                  )}
+                  {item.extra && (
+                    <p className="text-body-sm text-on-surface-variant">{item.extra}</p>
+                  )}
+                </div>
+              </div>
+              {item.price !== null && (
+                <span className="text-headline-sm font-semibold text-secondary whitespace-nowrap ml-4">
+                  {formatPrice(item.price)}
+                </span>
+              )}
+            </div>
+          ))}
+        </section>
       </div>
     );
   }
@@ -385,16 +535,36 @@ export default function CreatePage() {
     <div className="flex flex-col gap-8 pb-20">
       <h1 className="text-headline-md text-on-surface">Crear pastel</h1>
 
-      <Stepper steps={STEPS} currentStep={currentStep} />
+      {isSubmitted ? (
+        <Card className="flex flex-col items-center gap-4 py-12 text-center">
+          <Icon name="check_circle" size={3} className="text-secondary" />
+          <h2 className="text-headline-md text-on-surface">¡Pedido confirmado!</h2>
+          <p className="text-body-md text-on-surface-variant">
+            Recibimos tu pedido y comenzaremos a prepararlo pronto.
+          </p>
+          <a href="/orders" className="text-body-md font-semibold text-secondary underline">
+            Ver mis pedidos
+          </a>
+        </Card>
+      ) : (
+        <>
+          <Stepper steps={STEPS} currentStep={currentStep} />
 
-      <p className="text-body-md text-on-surface-variant">
-        Paso {currentStep + 1}: {STEPS[currentStep].label}
-      </p>
+          <p className="text-body-md text-on-surface-variant">
+            Paso {currentStep + 1}: {STEPS[currentStep].label}
+          </p>
 
-      {renderStep()}
+          {renderStep()}
+          {submitError && (
+            <p role="alert" className="text-body-md text-error">
+              {submitError}
+            </p>
+          )}
+        </>
+      )}
 
       {/* Sticky action footer — glassmorphism with running subtotal and nav */}
-      <div className="glass-effect fixed inset-x-0 bottom-0 z-30 flex h-16 items-center justify-between border-t border-outline-variant bg-surface/90 px-4 lg:px-8">
+      {!isSubmitted && <div className="glass-effect fixed inset-x-0 bottom-0 z-30 flex h-16 items-center justify-between border-t border-outline-variant bg-surface/90 px-4 lg:px-8">
         <div className="flex items-baseline gap-2">
           <span className="text-body-sm text-on-surface-variant">Subtotal</span>
           <span className="text-headline-sm font-semibold text-secondary">
@@ -415,17 +585,18 @@ export default function CreatePage() {
           <Button
             variant="primary"
             size="sm"
-            onClick={next}
+            onClick={isLastStep ? handleSubmitOrder : next}
             disabled={getStepDisabled()}
+            loading={isSubmitting}
             icon={
               <Icon name={isLastStep ? 'check' : 'arrow_forward'} />
             }
             iconPosition="right"
           >
-            {isLastStep ? 'Finalizar' : 'Siguiente'}
+            {isLastStep ? 'Confirmar pedido' : 'Siguiente'}
           </Button>
         </div>
-      </div>
+      </div>}
     </div>
   );
 }

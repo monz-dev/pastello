@@ -171,6 +171,8 @@ export type Database = {
           total_price: number;
           status: string;
           required_date: string | null;
+          delivery_type: string | null;
+          delivery_time: string | null;
           notes: string | null;
           whatsapp_message: string | null;
           created_at: string | null;
@@ -190,6 +192,8 @@ export type Database = {
           total_price: number;
           status?: string;
           required_date?: string | null;
+          delivery_type?: string | null;
+          delivery_time?: string | null;
           notes?: string | null;
           whatsapp_message?: string | null;
           created_at?: string | null;
@@ -209,6 +213,8 @@ export type Database = {
           total_price?: number;
           status?: string;
           required_date?: string | null;
+          delivery_type?: string | null;
+          delivery_time?: string | null;
           notes?: string | null;
           whatsapp_message?: string | null;
           created_at?: string | null;
