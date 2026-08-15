@@ -8,6 +8,8 @@ import { Card } from '@/components/ui/card';
 import { Icon } from '@/components/ui/icon';
 import { CakeSizeIcon } from '@/components/features/cake-size-icon';
 import {
+  DELIVERY_FEE,
+  DELIVERY_TYPE,
   DeliveryStep,
   getMinDate,
   getMinTimeForDate,
@@ -21,8 +23,8 @@ const STEPS = [
   { label: 'Pan' },
   { label: 'Relleno' },
   { label: 'Cobertura' },
-  { label: 'Resumen' },
   { label: 'Entrega' },
+  { label: 'Resumen' },
 ];
 
 type SizeOption = {
@@ -129,6 +131,7 @@ export default function CreatePage() {
   const [deliveryDate, setDeliveryDate] = useState('');
   const [deliveryTime, setDeliveryTime] = useState('');
   const [deliveryType, setDeliveryType] = useState<DeliveryType | null>(null);
+  const [deliveryAddress, setDeliveryAddress] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [isSubmitted, setIsSubmitted] = useState(false);
@@ -136,6 +139,7 @@ export default function CreatePage() {
     date: undefined as string | undefined,
     time: undefined as string | undefined,
     type: undefined as string | undefined,
+    address: undefined as string | undefined,
   });
 
   const allIngredients = useCallback(async () => {
@@ -195,10 +199,10 @@ export default function CreatePage() {
       selectedRellenoId === null,
       selectedCoberturaId === null,
     ];
-    if (currentStep === 4) return false;
-    if (currentStep === 5) {
+    if (currentStep === 4) {
       return !isDeliveryScheduleValid();
     }
+    if (currentStep === 5) return false;
     return selections[currentStep] ?? false;
   }
 
@@ -207,6 +211,7 @@ export default function CreatePage() {
     if (!deliveryDate || deliveryDate < minDate) return false;
     if (!TIME_SLOTS.includes(deliveryTime)) return false;
     if (deliveryType === null) return false;
+    if (deliveryType === DELIVERY_TYPE.DELIVERY && !deliveryAddress.trim()) return false;
 
     // When delivery is on the minimum date, time must be at or after the 24h threshold
     const minTimeForDate = getMinTimeForDate(deliveryDate);
@@ -234,9 +239,13 @@ export default function CreatePage() {
         return undefined;
       })(),
       type: deliveryType ? undefined : 'Selecciona cómo recibirás tu pedido.',
+      address:
+        deliveryType === DELIVERY_TYPE.DELIVERY && !deliveryAddress.trim()
+          ? 'Escribe la dirección de entrega.'
+          : undefined,
     };
     setFieldErrors(errors);
-    return !errors.date && !errors.time && !errors.type;
+    return !errors.date && !errors.time && !errors.type && !errors.address;
   }
 
   async function handleSubmitOrder() {
@@ -261,10 +270,11 @@ export default function CreatePage() {
         relleno_choice: selectedRellenoId,
         cobertura_choice: selectedCoberturaId,
         size_choice: sizes.find((size) => size.id === selectedSizeId)?.name ?? null,
-        total_price: subtotal,
+        total_price: total,
         required_date: deliveryDate,
         delivery_type: deliveryType,
         delivery_time: deliveryTime,
+        delivery_address: deliveryType === DELIVERY_TYPE.DELIVERY ? deliveryAddress.trim() : null,
       } as never);
 
       if (error) throw error;
@@ -276,6 +286,7 @@ export default function CreatePage() {
       setDeliveryDate('');
       setDeliveryTime('');
       setDeliveryType(null);
+      setDeliveryAddress('');
       setIsSubmitted(true);
     } catch (error) {
       setSubmitError(
@@ -295,6 +306,9 @@ export default function CreatePage() {
     rellenos.find((r) => r.id === selectedRellenoId)?.additional_price ?? 0,
     coberturas.find((c) => c.id === selectedCoberturaId)?.additional_price ?? 0,
   ].reduce((acc, price) => acc + price, 0);
+
+  const deliveryFee = deliveryType === DELIVERY_TYPE.DELIVERY ? DELIVERY_FEE : 0;
+  const total = subtotal + deliveryFee;
 
   // Scroll behavior on step change
   const prevStepRef = useRef(currentStep);
@@ -440,13 +454,14 @@ export default function CreatePage() {
       );
     }
 
-    if (currentStep === 5) {
+    if (currentStep === 4) {
       const minTime = deliveryDate ? getMinTimeForDate(deliveryDate) : null;
       return (
         <DeliveryStep
           deliveryDate={deliveryDate}
           deliveryTime={deliveryTime}
           deliveryType={deliveryType}
+          deliveryAddress={deliveryAddress}
           minTime={minTime}
           onDeliveryDateChange={(value) => {
             setDeliveryDate(value);
@@ -459,16 +474,21 @@ export default function CreatePage() {
           }}
           onDeliveryTypeChange={(value) => {
             setDeliveryType(value);
-            setFieldErrors((current) => ({ ...current, type: undefined }));
+            setFieldErrors((current) => ({ ...current, type: undefined, address: undefined }));
+          }}
+          onDeliveryAddressChange={(value) => {
+            setDeliveryAddress(value);
+            setFieldErrors((current) => ({ ...current, address: undefined }));
           }}
           dateError={fieldErrors.date}
           timeError={fieldErrors.time}
           typeError={fieldErrors.type}
+          addressError={fieldErrors.address}
         />
       );
     }
 
-    // Step 4 — Resumen
+    // Step 5 — Resumen
     const selectedSize = sizes.find((s) => s.id === selectedSizeId) ?? null;
     const selectedPan = pans.find((p) => p.id === selectedPanId) ?? null;
     const selectedRelleno = rellenos.find((r) => r.id === selectedRellenoId) ?? null;
@@ -481,7 +501,7 @@ export default function CreatePage() {
       { label: 'Cobertura', name: selectedCobertura?.name ?? '—', description: selectedCobertura?.description ?? null, price: selectedCobertura?.additional_price ?? null, icon: 'brush' },
     ];
 
-    const total = items.reduce((acc, item) => acc + (item.price ?? 0), 0);
+    const total = items.reduce((acc, item) => acc + (item.price ?? 0), 0) + deliveryFee;
 
     // Preview image: preferred cobertura, fallback to pan
     const previewImage = selectedCobertura?.image_url || selectedPan?.image_url || null;
@@ -547,6 +567,55 @@ export default function CreatePage() {
             </div>
           ))}
         </section>
+
+        {/* Delivery Details */}
+        <section className="space-y-4">
+          <h3 className="text-label-md uppercase tracking-widest text-outline">Entrega</h3>
+          <div className="glass-effect rounded-2xl p-4 flex items-center justify-between border border-white/50 shadow-sm bg-surface/70">
+            <div className="flex items-center gap-4">
+              <div className="w-12 h-12 rounded-xl bg-primary-container/30 flex items-center justify-center text-primary shrink-0">
+                <Icon name="local_shipping" size={1.5} />
+              </div>
+              <div className="min-w-0">
+                <p className="text-body-sm text-on-surface-variant">Tipo</p>
+                <p className="text-headline-sm text-on-surface">
+                  {deliveryType === DELIVERY_TYPE.DELIVERY ? 'Entrega a domicilio' : 'Recoger en tienda'}
+                </p>
+              </div>
+            </div>
+            {deliveryFee > 0 && (
+              <span className="text-headline-sm font-semibold text-secondary whitespace-nowrap ml-4">
+                {formatPrice(deliveryFee)}
+              </span>
+            )}
+          </div>
+
+          <div className="glass-effect rounded-2xl p-4 border border-white/50 shadow-sm bg-surface/70 space-y-3">
+            <div className="flex items-center gap-3">
+              <Icon name="event" size={1.25} className="text-primary" />
+              <div>
+                <p className="text-body-sm text-on-surface-variant">Fecha</p>
+                <p className="text-headline-sm text-on-surface">{deliveryDate || '—'}</p>
+              </div>
+            </div>
+            <div className="flex items-center gap-3">
+              <Icon name="schedule" size={1.25} className="text-primary" />
+              <div>
+                <p className="text-body-sm text-on-surface-variant">Hora</p>
+                <p className="text-headline-sm text-on-surface">{deliveryTime || '—'}</p>
+              </div>
+            </div>
+            {deliveryType === DELIVERY_TYPE.DELIVERY && (
+              <div className="flex items-center gap-3">
+                <Icon name="location_on" size={1.25} className="text-primary" />
+                <div>
+                  <p className="text-body-sm text-on-surface-variant">Dirección</p>
+                  <p className="text-headline-sm text-on-surface">{deliveryAddress}</p>
+                </div>
+              </div>
+            )}
+          </div>
+        </section>
       </div>
     );
   }
@@ -586,9 +655,9 @@ export default function CreatePage() {
       {/* Sticky action footer — glassmorphism with running subtotal and nav */}
       {!isSubmitted && <div className="glass-effect fixed inset-x-0 bottom-0 z-30 flex h-16 items-center justify-between border-t border-outline-variant bg-surface/90 px-4 lg:px-8">
         <div className="flex items-baseline gap-2">
-          <span className="text-body-sm text-on-surface-variant">Subtotal</span>
+          <span className="text-body-sm text-on-surface-variant">Total</span>
           <span className="text-headline-sm font-semibold text-secondary">
-            {formatPrice(subtotal)}
+            {formatPrice(total)}
           </span>
         </div>
 

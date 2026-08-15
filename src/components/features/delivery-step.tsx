@@ -2,12 +2,14 @@
 
 import { Card } from '@/components/ui/card';
 
-const DELIVERY_TYPE = {
+export const DELIVERY_TYPE = {
   PICKUP: 'pickup',
   DELIVERY: 'delivery',
 } as const;
 
 export type DeliveryType = (typeof DELIVERY_TYPE)[keyof typeof DELIVERY_TYPE];
+
+export const DELIVERY_FEE = 20;
 
 export const TIME_SLOTS = Array.from({ length: 28 }, (_, index) => {
   const totalMinutes = 15 * 60 + index * 15;
@@ -54,27 +56,33 @@ interface DeliveryStepProps {
   deliveryDate: string;
   deliveryTime: string;
   deliveryType: DeliveryType | null;
+  deliveryAddress: string;
   onDeliveryDateChange: (value: string) => void;
   onDeliveryTimeChange: (value: string) => void;
   onDeliveryTypeChange: (value: DeliveryType) => void;
+  onDeliveryAddressChange: (value: string) => void;
   /** Earliest allowed time for the currently selected date (HH:MM), or null if any time is allowed. */
   minTime?: string | null;
   dateError?: string;
   timeError?: string;
   typeError?: string;
+  addressError?: string;
 }
 
 export function DeliveryStep({
   deliveryDate,
   deliveryTime,
   deliveryType,
+  deliveryAddress,
   onDeliveryDateChange,
   onDeliveryTimeChange,
   onDeliveryTypeChange,
+  onDeliveryAddressChange,
   minTime,
   dateError,
   timeError,
   typeError,
+  addressError,
 }: DeliveryStepProps) {
   const availableSlots = minTime
     ? TIME_SLOTS.filter((slot) => slot >= minTime)
@@ -137,12 +145,30 @@ export function DeliveryStep({
             variant="selection"
             title="Entrega a domicilio"
             description="Recibe tu pedido en la dirección indicada."
+            price={DELIVERY_FEE}
+            pricePrefix="+$"
             selected={deliveryType === DELIVERY_TYPE.DELIVERY}
             onSelect={() => onDeliveryTypeChange(DELIVERY_TYPE.DELIVERY)}
           />
         </div>
         {typeError && <span className="text-body-sm text-error">{typeError}</span>}
       </fieldset>
+
+      {deliveryType === DELIVERY_TYPE.DELIVERY && (
+        <label className="flex flex-col gap-2 text-label-md text-on-surface">
+          Dirección de entrega
+          <input
+            aria-label="Dirección de entrega"
+            type="text"
+            value={deliveryAddress}
+            onChange={(event) => onDeliveryAddressChange(event.target.value)}
+            placeholder="Calle, número, colonia, ciudad…"
+            className="min-h-12 rounded-md border border-outline-variant bg-beige-soft px-4 text-body-md text-on-surface outline-none focus:border-primary focus:ring-2 focus:ring-primary/30"
+            aria-invalid={Boolean(addressError)}
+          />
+          {addressError && <span className="text-body-sm text-error">{addressError}</span>}
+        </label>
+      )}
     </div>
   );
 }
