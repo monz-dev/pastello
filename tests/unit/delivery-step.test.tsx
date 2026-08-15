@@ -12,17 +12,20 @@ function renderStep() {
   const onDateChange = vi.fn();
   const onTimeChange = vi.fn();
   const onTypeChange = vi.fn<(value: DeliveryType) => void>();
+  const onAddressChange = vi.fn<(value: string) => void>();
   render(
     <DeliveryStep
       deliveryDate=""
       deliveryTime=""
       deliveryType={null}
+      deliveryAddress=""
       onDeliveryDateChange={onDateChange}
       onDeliveryTimeChange={onTimeChange}
       onDeliveryTypeChange={onTypeChange}
+      onDeliveryAddressChange={onAddressChange}
     />,
   );
-  return { onDateChange, onTimeChange, onTypeChange };
+  return { onDateChange, onTimeChange, onTypeChange, onAddressChange };
 }
 
 describe('DeliveryStep', () => {
@@ -61,9 +64,11 @@ describe('DeliveryStep', () => {
         deliveryDate=""
         deliveryTime=""
         deliveryType={null}
+        deliveryAddress=""
         onDeliveryDateChange={vi.fn()}
         onDeliveryTimeChange={vi.fn()}
         onDeliveryTypeChange={vi.fn()}
+        onDeliveryAddressChange={vi.fn()}
         dateError="Fecha inválida"
         timeError="Hora inválida"
         typeError="Selecciona una opción"
@@ -87,9 +92,11 @@ describe('DeliveryStep', () => {
         deliveryDate=""
         deliveryTime=""
         deliveryType={null}
+        deliveryAddress=""
         onDeliveryDateChange={vi.fn()}
         onDeliveryTimeChange={vi.fn()}
         onDeliveryTypeChange={vi.fn()}
+        onDeliveryAddressChange={vi.fn()}
       />,
     );
     const options = screen.getByLabelText('Hora de entrega').querySelectorAll('option');
@@ -102,10 +109,12 @@ describe('DeliveryStep', () => {
         deliveryDate="2026-08-12"
         deliveryTime=""
         deliveryType={null}
+        deliveryAddress=""
         minTime="18:00"
         onDeliveryDateChange={vi.fn()}
         onDeliveryTimeChange={vi.fn()}
         onDeliveryTypeChange={vi.fn()}
+        onDeliveryAddressChange={vi.fn()}
       />,
     );
     const options = screen.getByLabelText('Hora de entrega').querySelectorAll('option');
@@ -119,6 +128,66 @@ describe('DeliveryStep', () => {
     const slotTexts = Array.from(options).map((opt) => opt.textContent);
     expect(slotTexts).not.toContain('15:00');
     expect(slotTexts).not.toContain('17:45');
+  });
+
+  it('does not render the address input when delivery type is not delivery', () => {
+    render(
+      <DeliveryStep
+        deliveryDate=""
+        deliveryTime=""
+        deliveryType="pickup"
+        deliveryAddress=""
+        onDeliveryDateChange={vi.fn()}
+        onDeliveryTimeChange={vi.fn()}
+        onDeliveryTypeChange={vi.fn()}
+        onDeliveryAddressChange={vi.fn()}
+      />,
+    );
+    expect(screen.queryByLabelText('Dirección de entrega')).not.toBeInTheDocument();
+  });
+
+  it('renders the address input when delivery type is delivery', () => {
+    render(
+      <DeliveryStep
+        deliveryDate=""
+        deliveryTime=""
+        deliveryType="delivery"
+        deliveryAddress=""
+        onDeliveryDateChange={vi.fn()}
+        onDeliveryTimeChange={vi.fn()}
+        onDeliveryTypeChange={vi.fn()}
+        onDeliveryAddressChange={vi.fn()}
+      />,
+    );
+    expect(screen.getByLabelText('Dirección de entrega')).toBeInTheDocument();
+  });
+
+  it('shows the +$20 delivery fee on the home-delivery card', () => {
+    renderStep();
+    const deliveryCard = screen.getByRole('button', { name: /Entrega a domicilio/i });
+    expect(deliveryCard).toHaveTextContent('+$20');
+    const pickupCard = screen.getByRole('button', { name: /Recoger en tienda/i });
+    expect(pickupCard).not.toHaveTextContent('+$20');
+  });
+
+  it('calls onDeliveryAddressChange when the address input changes', () => {
+    const onAddressChange = vi.fn<(value: string) => void>();
+    render(
+      <DeliveryStep
+        deliveryDate=""
+        deliveryTime=""
+        deliveryType="delivery"
+        deliveryAddress=""
+        onDeliveryDateChange={vi.fn()}
+        onDeliveryTimeChange={vi.fn()}
+        onDeliveryTypeChange={vi.fn()}
+        onDeliveryAddressChange={onAddressChange}
+      />,
+    );
+    fireEvent.change(screen.getByLabelText('Dirección de entrega'), {
+      target: { value: 'Calle 1' },
+    });
+    expect(onAddressChange).toHaveBeenCalledWith('Calle 1');
   });
 });
 

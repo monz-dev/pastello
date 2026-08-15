@@ -173,6 +173,7 @@ export type Database = {
           required_date: string | null;
           delivery_type: string | null;
           delivery_time: string | null;
+          delivery_address: string | null;
           notes: string | null;
           whatsapp_message: string | null;
           created_at: string | null;
@@ -194,6 +195,7 @@ export type Database = {
           required_date?: string | null;
           delivery_type?: string | null;
           delivery_time?: string | null;
+          delivery_address?: string | null;
           notes?: string | null;
           whatsapp_message?: string | null;
           created_at?: string | null;
@@ -215,6 +217,7 @@ export type Database = {
           required_date?: string | null;
           delivery_type?: string | null;
           delivery_time?: string | null;
+          delivery_address?: string | null;
           notes?: string | null;
           whatsapp_message?: string | null;
           created_at?: string | null;
